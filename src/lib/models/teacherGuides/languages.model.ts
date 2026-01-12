@@ -1,35 +1,25 @@
 import { Sequelize, Model } from "sequelize";
 
-export class User extends Model {
-  declare user_id: number;
-  declare username: string;
-  declare email: string;
-  declare role: string;
+export class Language extends Model {
+  declare language_id: number;
+  declare language: string;
   declare createdAt: Date;
   declare updatedAt: Date;
 }
 
-export function UserFactory(
+export function LanguageFactory(
   sequelize: Sequelize,
   DataTypes: typeof import("sequelize").DataTypes
 ) {
-  User.init({
-    user_id: {
+  Language.init({
+    language_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
-    username: {
+    language: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    role: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     createdAt:{
       type: DataTypes.DATE,
@@ -42,10 +32,10 @@ export function UserFactory(
   },
   {
     sequelize,
-    tableName: "Users",   // <-- use your existing table name
+    tableName: "Languages",   // <-- use your existing table name
     timestamps: true,    // disable createdAt/updatedAt if not in table
     freezeTableName: true, // prevent Sequelize from pluralizing table name
   });
 
-  return User;
+  return Language;
 };

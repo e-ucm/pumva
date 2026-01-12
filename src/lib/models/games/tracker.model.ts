@@ -1,34 +1,39 @@
 import { Sequelize, Model } from "sequelize";
 
-export class User extends Model {
-  declare user_id: number;
-  declare username: string;
-  declare email: string;
-  declare role: string;
+export class Tracker extends Model {
+  declare technology_id: number;
+  declare tracker_id: number;
+  declare tracker: string;
+  declare public: boolean;
+  declare owner_id: number;
   declare createdAt: Date;
   declare updatedAt: Date;
 }
 
-export function UserFactory(
+export function TrackerFactory(
   sequelize: Sequelize,
   DataTypes: typeof import("sequelize").DataTypes
 ) {
-  User.init({
-    user_id: {
+  Tracker.init({
+    technology_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    tracker_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
-    username: {
+    tracker: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
-    email: {
-      type: DataTypes.STRING,
+    public: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    role: {
-      type: DataTypes.STRING,
+    owner_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     createdAt:{
@@ -42,10 +47,10 @@ export function UserFactory(
   },
   {
     sequelize,
-    tableName: "Users",   // <-- use your existing table name
+    tableName: "Trackers",   // <-- use your existing table name
     timestamps: true,    // disable createdAt/updatedAt if not in table
     freezeTableName: true, // prevent Sequelize from pluralizing table name
   });
 
-  return User;
+  return Tracker;
 };

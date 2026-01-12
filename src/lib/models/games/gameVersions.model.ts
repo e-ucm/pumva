@@ -1,33 +1,27 @@
 import { Sequelize, Model } from "sequelize";
 
-export class User extends Model {
-  declare user_id: number;
-  declare username: string;
-  declare email: string;
-  declare role: string;
+export class GamesVersions extends Model {
+  declare game_id: number;
+  declare version_id: number;
+  declare external_url: string;
   declare createdAt: Date;
   declare updatedAt: Date;
 }
 
-export function UserFactory(
+export function GamesVersionsFactory(
   sequelize: Sequelize,
   DataTypes: typeof import("sequelize").DataTypes
 ) {
-  User.init({
-    user_id: {
+  GamesVersions.init({
+    game_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+    version_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    role: {
+    external_url: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -42,10 +36,10 @@ export function UserFactory(
   },
   {
     sequelize,
-    tableName: "Users",   // <-- use your existing table name
+    tableName: "Games_Versions",   // <-- use your existing table name
     timestamps: true,    // disable createdAt/updatedAt if not in table
     freezeTableName: true, // prevent Sequelize from pluralizing table name
   });
 
-  return User;
+  return GamesVersions;
 };
