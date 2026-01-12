@@ -1,4 +1,4 @@
-import * as views from "@/lib/sql_model/views/index.js";
+import * as views from "@/lib/views/index.js";
 
 /**
  * 

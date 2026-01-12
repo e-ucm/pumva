@@ -1,6 +1,7 @@
-import { validateParams } from "@/lib/sql_model/validateParams.js";
+import { validateParams } from "@/lib/validateParams.js";
+import { Sequelize, QueryTypes } from "sequelize";
 
-module.exports = (sequelize: { query: (arg0: any, arg1: { replacements: {}; type: any; }) => any; QueryTypes: { SELECT: any; }; }) => {
+export default function initFunctions(sequelize: Sequelize) {
   return {
     runViewQuery: async (query: { sql: any; params: any; }, params = {}) => {
       if (!query.sql || !query.params) {
@@ -11,7 +12,7 @@ module.exports = (sequelize: { query: (arg0: any, arg1: { replacements: {}; type
 
       return sequelize.query(query.sql, {
         replacements: params,
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       });
     },
   };

@@ -1,5 +1,21 @@
-module.exports = (sequelize: any, DataTypes: { INTEGER: any; STRING: any; BOOLEAN: any; DATE: any; }) => {
-  const Model = sequelize.define("User", {
+import { Sequelize, Model } from "sequelize";
+
+export class User extends Model {
+  declare user_id: number;
+  declare username: string;
+  declare email: string;
+  declare isToken: boolean;
+  declare token: string;
+  declare role: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+}
+
+export function UserFactory(
+  sequelize: Sequelize,
+  DataTypes: typeof import("sequelize").DataTypes
+) {
+  User.init({
     user_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -35,10 +51,11 @@ module.exports = (sequelize: any, DataTypes: { INTEGER: any; STRING: any; BOOLEA
     }
   },
   {
+    sequelize,
     tableName: "Users",   // <-- use your existing table name
     timestamps: true,    // disable createdAt/updatedAt if not in table
     freezeTableName: true, // prevent Sequelize from pluralizing table name
   });
 
-  return Model;
+  return User;
 };
