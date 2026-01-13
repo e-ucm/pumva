@@ -4,7 +4,7 @@ export function GamesViews() {
       description: "List games and games permissions for a specific user",
       sql: `
         SELECT *
-        FROM v_public_games_permissions
+        FROM v_complete_game_permissions
         WHERE user_id = :user_id
       `,
       params: {
@@ -16,7 +16,6 @@ export function GamesViews() {
         },
       },
     },
-
     publicGames: {
       description: "List all public games",
       sql: `
