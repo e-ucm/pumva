@@ -1,9 +1,13 @@
-import { User } from "@/lib/models/users/user.model";
+import { Users } from "@/lib/models/users/user.model";
 
 export async function getUsers() {
-  return User.findAll();
+  return Users.findAll();
 }
 
-export async function createUser(name: string, email: string) {
-  return User.create({ name, email });
+export async function getUserByUsername(username: string) {
+  return Users.findOne({ where: { username } });
+}
+
+export async function createUser(username: string, email: string, role: string) {
+  return Users.create({ username, email, role });
 }
