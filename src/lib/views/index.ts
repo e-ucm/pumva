@@ -1,8 +1,9 @@
 import { Sequelize } from "sequelize";
-import { UserViews } from "@/lib/views/userView.queries.js";
-
-export default function initFunctions(sequelize: Sequelize) {
+import { GamesViews } from "@/lib/views/gamesView.queries";
+import { UsersViews } from "@/lib/views/usersView.queries";
+export default function initViews(sequelize: Sequelize) {
   return {
-    User: UserViews(),
+    Games: GamesViews(),
+    Users: UsersViews(),
   };
 }

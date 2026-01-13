@@ -1,4 +1,4 @@
-import { validateParams } from "@/lib/validateParams.js";
+import { validateParams } from "@/lib/validateParams";
 import { Sequelize, QueryTypes } from "sequelize";
 
 export default function initFunctions(sequelize: Sequelize) {

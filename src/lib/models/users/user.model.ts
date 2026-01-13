@@ -1,6 +1,6 @@
 import { Sequelize, Model } from "sequelize";
 
-export class User extends Model {
+export class Users extends Model {
   declare user_id: number;
   declare username: string;
   declare email: string;
@@ -13,7 +13,7 @@ export function UserFactory(
   sequelize: Sequelize,
   DataTypes: typeof import("sequelize").DataTypes
 ) {
-  User.init({
+  Users.init({
     user_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -47,5 +47,5 @@ export function UserFactory(
     freezeTableName: true, // prevent Sequelize from pluralizing table name
   });
 
-  return User;
+  return Users;
 };

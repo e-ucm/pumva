@@ -12,7 +12,7 @@ import { TeacherGuideFactory } from "@/lib/models/teacherGuides/teacherGuide.mod
 import { LanguageFactory } from "@/lib/models/teacherGuides/languages.model";
 
 export default function initModels(sequelize: Sequelize) {
-  const User = UserFactory(sequelize, DataTypes);
+  const Users = UserFactory(sequelize, DataTypes);
   const Game = GameFactory(sequelize, DataTypes);
   const Technology = TechnologyFactory(sequelize, DataTypes);
   const Tracker = TrackerFactory(sequelize, DataTypes);
@@ -21,7 +21,7 @@ export default function initModels(sequelize: Sequelize) {
   const GamePermissions = GamePermissionsFactory(sequelize, DataTypes);
   const GamesVersions = GamesVersionsFactory(sequelize, DataTypes);
   return {
-    User,
+    Users,
     Game,
     Technology,
     Tracker,
