@@ -15,6 +15,8 @@ export function TechnologyFactory(
     technology_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      allowNull: false,
+      autoIncrement: true
     },
     technology: {
       type: DataTypes.STRING,

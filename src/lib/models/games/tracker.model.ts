@@ -15,26 +15,20 @@ export function TrackerFactory(
   DataTypes: typeof import("sequelize").DataTypes
 ) {
   Tracker.init({
-    technology_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     tracker_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true
+    },
+    technology_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false
     },
     tracker: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-    },
-    public: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    owner_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
     },
     createdAt:{
       type: DataTypes.DATE,

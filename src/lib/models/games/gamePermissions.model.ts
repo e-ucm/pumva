@@ -14,9 +14,11 @@ export function GamePermissionsFactory(
     game_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      allowNull: false,
     },
     user_id: {
       type: DataTypes.INTEGER,
+      primaryKey: true,
       allowNull: false,
     },
     permission: {

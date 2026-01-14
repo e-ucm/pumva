@@ -22,6 +22,7 @@ export function GameFactory(
     game_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true
     },
     public: {
       type: DataTypes.BOOLEAN,
@@ -33,8 +34,7 @@ export function GameFactory(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: false
     },
     description: {
       type: DataTypes.STRING,

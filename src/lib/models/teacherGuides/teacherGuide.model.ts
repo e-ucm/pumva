@@ -16,15 +16,16 @@ export function TeacherGuideFactory(
     game_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      allowNull: false,
     },
     language_id: {
       type: DataTypes.INTEGER,
+      primaryKey: true,
       allowNull: false,
     },
     url: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: false
     },
     createdAt:{
       type: DataTypes.DATE,

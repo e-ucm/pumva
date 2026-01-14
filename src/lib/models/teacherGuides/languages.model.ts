@@ -15,11 +15,12 @@ export function LanguageFactory(
     language_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true
     },
     language: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     createdAt:{
       type: DataTypes.DATE,
