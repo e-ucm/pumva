@@ -9,6 +9,12 @@ export class User extends Model {
   declare updatedAt: Date;
 }
 
+/**
+ * 
+ * @param sequelize 
+ * @param DataTypes 
+ * @returns 
+ */
 export function UserFactory(
   sequelize: Sequelize,
   DataTypes: typeof import("sequelize").DataTypes

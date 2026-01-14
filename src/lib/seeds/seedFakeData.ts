@@ -2,6 +2,9 @@ import { faker } from "@faker-js/faker";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 
+/**
+ * Clear database
+ */
 export async function clearDatabase() {
   await db.Tables.TeacherGuide.destroy({ where: {} });
   await db.Tables.GamesVersions.destroy({ where: {} });

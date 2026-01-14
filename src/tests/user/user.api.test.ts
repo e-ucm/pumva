@@ -15,8 +15,11 @@ describe("/api/users", () => {
   
   it("GET returns empty array initially", async () => {
     const response = await GET(new Request("http://localhost/api/users"), { params: {} });
-    const data = await response.json();
-    expect(data).toEqual([]);
+    expect(response).toBeDefined();
+    if(response) {
+      const data = await response.json();
+      expect(data).toEqual([]);
+    }
   });
 
   it("POST creates a user", async () => {
@@ -38,13 +41,19 @@ describe("/api/users", () => {
 
   it("GET returns user after creation", async () => {
     const response = await GET(new Request("http://localhost/api/users"), { params: { username: "Charlie" } });
-    const data = await response.json();
-    expect(data.username).toBe("Charlie");
+    expect(response).toBeDefined();
+    if(response) {
+      const data = await response.json();
+      expect(data.username).toBe("Charlie");
+    }
   });
 
   it("GET returns none user for username that doesn't exist", async () => {
     const response = await GET(new Request("http://localhost/api/users"), { params: { username: "Toto" } });
-    const data = await response.json();
-    expect(data).toBe(null);
+    expect(response).toBeDefined();
+    if(response) {
+      const data = await response.json();
+      expect(data).toBe(null);
+    }
   });
 });

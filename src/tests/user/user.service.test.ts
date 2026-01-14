@@ -1,5 +1,5 @@
-import { createUser, getUserByUsername, getUsers } from "../lib/services/user.service";
-import { db } from "../lib/db";
+import { createUser, getUserByUsername, getUsers } from "@/lib/services/user.service";
+import { db } from "@/lib/db";
 
 describe("User service", () => {
   beforeAll(async () => {
@@ -19,8 +19,11 @@ describe("User service", () => {
     if(!user) {
         user = await createUser("Bob", "bob@test.com", "tester");
     }
-    expect(user.user_id).toBeDefined();
-    expect(user.username).toBe("Bob");
+    expect(user).toBeDefined();
+    if(user) {
+      expect(user.user_id).toBeDefined();
+      expect(user.username).toBe("Bob");
+    }
   });
 
   it("fetches users", async () => {

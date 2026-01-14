@@ -3,6 +3,7 @@ import { logger } from "@/lib/logger";
 import initModels from "@/lib/models";
 import initFunctions from "@/lib/functions";
 import initViews from "@/lib/views";
+import { config } from '@/lib/config';
 
 type DbType = {
   Sequelize: typeof Sequelize;
@@ -19,9 +20,10 @@ const globalForDb = globalThis as unknown as {
 if (!globalForDb.db) {
   const isTest = process.env.NODE_ENV === "test";
   logger.info(`Initializing DB (isTest: ${isTest})`);
+  logger.info(config.db.path + config.db.file);
   const sequelize = new Sequelize({
     dialect: "sqlite",
-    storage: isTest ? ":memory:" : "/data/db/pumva_data.db",
+    storage: isTest ? ":memory:" : config.db.path + config.db.file,
     logging: (sql) => logger.debug(sql),
   });
 

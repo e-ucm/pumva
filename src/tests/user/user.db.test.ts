@@ -42,10 +42,10 @@ describe("Sequelize + SQLite", () => {
     expect((results[0] as any).username).toBe("Alice");
   });
 
-    it("generate 10 users into DB", async () => {
-      await seedUsers(10);
-      const users = await db.Tables.User.findAll();
-      expect(users.length).toBeGreaterThanOrEqual(10);
-      expect(users[0].user_id).toBeDefined();
-    });
+  it("generate 10 users into DB", async () => {
+    await seedUsers(10);
+    const users = await db.Tables.User.findAll();
+    expect(users.length).toBeGreaterThanOrEqual(10);
+    expect(users[0].user_id).toBeDefined();
+  });
 });

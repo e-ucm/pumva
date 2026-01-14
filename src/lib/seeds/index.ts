@@ -1,6 +1,7 @@
 import { seedFakeData } from "@/lib/seeds/seedFakeData";
 import { logger } from "@/lib/logger";
 
+// seed fake data into database
 seedFakeData().then(() => {
   logger.info("Seeding completed.");
   process.exit(0);

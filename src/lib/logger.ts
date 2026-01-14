@@ -1,8 +1,9 @@
 import pino from 'pino';
 import fs from 'fs';
 import path from 'path';
+import { config } from '@/lib/config';
 
-const logsFolder = process.env.LOG_FOLDER || path.join(__dirname, '../../logs');
+const logsFolder = config.logger.folder;
 
 // Ensure logs folder exists
 if (!fs.existsSync(logsFolder)) {
@@ -11,7 +12,7 @@ if (!fs.existsSync(logsFolder)) {
 
 // Safe timestamp for filename (no colons)
 const timestamp = new Date().toISOString().replace(/:/g, '-');
-const processTag = process.env.PROCESS_TAG || '[MAIN]';
+const processTag = config.logger.processTag;
 const logFile = path.join(logsFolder, `${processTag}_${timestamp}.log`);
 
 // Base logger options
@@ -19,7 +20,7 @@ const options = {
   base: {
    tag: processTag
   },
-  level: (process.env.LOG_LEVEL || 'info').toLowerCase(),
+  level: (config.logger.level).toLowerCase(),
   redact: {
     paths: [
       'config.password',
