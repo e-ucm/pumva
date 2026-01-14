@@ -1,16 +1,13 @@
-const { db } = require("@/lib/db");
-const { logger } = require("@/lib/logger");
-logger.info("Running DB tests...");
-logger.info(db.Tables.Users);
-logger.info(db.Views);
+import { db } from "@/lib/db";
+import { seedUsers } from "@/lib/seeds/seedFakeData";
 
 describe("Sequelize + SQLite", () => {
   beforeAll(async () => {
-    if (process.env.NODE_ENV == "test") {
-      await db.sequelize.sync({ force: true }); // start with empty DB
-    } else {
-      await db.sequelize.authenticate();
-    }
+      try {
+        await db.sequelize.sync({ force: true });
+      } catch (err) {
+        console.error("Sequelize sync failed:", err);
+      }
   });
 
   afterAll(async () => {
@@ -18,9 +15,9 @@ describe("Sequelize + SQLite", () => {
   });
 
   it("should create a user if not present", async () => {
-    var user = await db.Tables.Users.findOne({ where: { username: "Alice" } });
+    var user = await db.Tables.User.findOne({ where: { username: "Alice" } });
     if (!user) {
-      user = await db.Tables.Users.create({
+      user = await db.Tables.User.create({
         username: "Alice",
         email: "alice@test.com",
         role: "tester",
@@ -31,7 +28,7 @@ describe("Sequelize + SQLite", () => {
   });
 
   it("should find all users", async () => {
-    const users = await db.Tables.Users.findAll();
+    const users = await db.Tables.User.findAll();
     expect(users.length).toBeGreaterThanOrEqual(1);
     expect(users[0].username).toBe("Alice");
   });
@@ -42,6 +39,13 @@ describe("Sequelize + SQLite", () => {
       { username: "Alice" }
     );
     expect(results.length).toBe(1);
-    expect(results[0].username).toBe("Alice");
+    expect((results[0] as any).username).toBe("Alice");
   });
+
+    it("generate 10 users into DB", async () => {
+      await seedUsers(10);
+      const users = await db.Tables.User.findAll();
+      expect(users.length).toBeGreaterThanOrEqual(10);
+      expect(users[0].user_id).toBeDefined();
+    });
 });

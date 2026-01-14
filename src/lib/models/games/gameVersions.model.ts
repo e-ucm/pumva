@@ -16,7 +16,6 @@ export function GamesVersionsFactory(
   GamesVersions.init({
     game_id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: false,
     },
     version_id: {

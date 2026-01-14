@@ -22,7 +22,7 @@ if (!globalForDb.db) {
   const sequelize = new Sequelize({
     dialect: "sqlite",
     storage: isTest ? ":memory:" : "/data/db/pumva_data.db",
-    logging: (sql) => logger.info(sql),
+    logging: (sql) => logger.debug(sql),
   });
 
   globalForDb.db = {

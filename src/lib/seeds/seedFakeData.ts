@@ -18,7 +18,7 @@ export async function clearDatabase() {
  */
 export async function seedUsers(count = 50) {
   const users = Array.from({ length: count }).map(() => ({
-    username: faker.internet.username(),
+    username: faker.internet.userName(),
     email: faker.internet.email(),
     role: faker.helpers.arrayElement(["admin", "researcher","teaching_assistant","teacher","student"]),
   }));
@@ -195,12 +195,3 @@ export async function seedFakeData() {
   await seedUserPermision(200);
   logger.info("Seeded 200 users games permissions.");
 }
-
-seedFakeData().then(() => {
-  logger.info("Seeding completed.");
-  process.exit(0);
-}).catch((error) => {
-  logger.error("Error during seeding:");
-  logger.error(error);
-  process.exit(1);
-});

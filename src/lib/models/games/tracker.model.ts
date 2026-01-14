@@ -22,7 +22,6 @@ export function TrackerFactory(
     },
     technology_id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: false
     },
     tracker: {

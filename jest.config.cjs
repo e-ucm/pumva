@@ -1,6 +1,7 @@
 module.exports = {
   
-  preset: "ts-jest",
+  //preset: "ts-jest",
+  preset: 'ts-jest/presets/default-esm', // for TS + ESM
 
   testEnvironment: "node",
   
@@ -9,10 +10,11 @@ module.exports = {
   
   globals: {
     "ts-jest": {
-      tsconfig: "tsconfig.jest.json"  // <- point to your test tsconfig
+      tsconfig: "tsconfig.jest.json",  // <- point to your test tsconfig
+      useESM: true
     }
   },
-  
+
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1"
   },

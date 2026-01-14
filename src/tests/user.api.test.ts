@@ -1,10 +1,18 @@
 import { GET, POST } from "@/api/users/route"; // route.ts
-
+import { db } from "@/lib/db";
 describe("/api/users", () => {
   beforeAll(async () => {
-    await import("@/lib/db").then(m => m.db.sequelize.sync({ force: true }));
+    try {
+      await db.sequelize.sync({ force: true });
+    } catch (err) {
+      console.error("Sequelize sync failed:", err);
+    }
   });
 
+  afterAll(async () => {
+    await db.sequelize.close();
+  });
+  
   it("GET returns empty array initially", async () => {
     const response = await GET(new Request("http://localhost/api/users"), { params: {} });
     const data = await response.json();

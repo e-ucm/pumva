@@ -3,10 +3,10 @@ import { db } from "../lib/db";
 
 describe("User service", () => {
   beforeAll(async () => {
-    if (process.env.NODE_ENV == "test") {
-      await db.sequelize.sync({ force: true }); // start with empty DB
-    } else {
-      await db.sequelize.authenticate();
+    try {
+      await db.sequelize.sync({ force: true });
+    } catch (err) {
+      console.error("Sequelize sync failed:", err);
     }
   });
 
