@@ -9,10 +9,10 @@ export function GamesViews() {
       `,
       params: {
         user_id: {
-          type: "string",
+          type: "number",
           required: true,
           description: "User id",
-          example: "235",
+          example: 235,
         },
       },
     },

@@ -10,9 +10,9 @@
     "lint": "eslint",
     "rebuild-sqlite": "npm rebuild sqlite3",
     "seed": "npm run rebuild-sqlite && tsx src/lib/seeds/index.ts",
-    "test": "NODE_ENV=test jest --verbose --runInBand",
-    "test:watch": "NODE_ENV=test jest --watchAll --verbose --runInBand",
-    "test:coverage": "NODE_ENV=test jest --coverage --verbose --runInBand"
+    "test": "npm run rebuild-sqlite && NODE_ENV=test jest --verbose --runInBand",
+    "test:watch": "npm run rebuild-sqlite && NODE_ENV=test jest --watchAll --verbose --runInBand",
+    "test:coverage": "npm run rebuild-sqlite && NODE_ENV=test jest --coverage --verbose --runInBand"
   },
   "dependencies": {
     "next": "16.1.1",

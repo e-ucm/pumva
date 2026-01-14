@@ -1,5 +1,6 @@
 import { validateParams } from "@/lib/validateParams";
 import { Sequelize, QueryTypes } from "sequelize";
+import fs from "node:fs";
 
 export default function initFunctions(sequelize: Sequelize) {
   return {
@@ -15,5 +16,11 @@ export default function initFunctions(sequelize: Sequelize) {
         type: QueryTypes.SELECT,
       });
     },
+    runSqlFile : async(filePath: string) => {
+      const sql = fs.readFileSync(filePath, "utf8");
+
+      // Split only if needed (SQLite is fine with multiple statements)
+      await sequelize.query(sql);
+    }
   };
 };

@@ -1,10 +1,12 @@
 import { createUser, getUserByUsername, getUsers } from "@/lib/services/user.service";
 import { db } from "@/lib/db";
+import { config } from "@/lib/config";
 
 describe("User service", () => {
   beforeAll(async () => {
     try {
       await db.sequelize.sync({ force: true });
+      await db.Functions.runSqlFile(config.db.views_sql_file);
     } catch (err) {
       console.error("Sequelize sync failed:", err);
     }

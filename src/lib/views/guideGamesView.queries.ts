@@ -9,13 +9,13 @@ export function GuideGamesViews() {
       `,
       params: {
         user_id: {
-          type: "string",
+          type: "number",
           required: true,
           description: "User id",
           example: "235",
         },
         game_id: {
-          type: "string",
+          type: "number",
           required: true,
           description: "Game id",
           example: "123",

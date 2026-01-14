@@ -20,10 +20,10 @@ const globalForDb = globalThis as unknown as {
 if (!globalForDb.db) {
   const isTest = process.env.NODE_ENV === "test";
   logger.info(`Initializing DB (isTest: ${isTest})`);
-  logger.info(config.db.path + config.db.file);
+  logger.info(config.db.complete_path);
   const sequelize = new Sequelize({
     dialect: "sqlite",
-    storage: isTest ? ":memory:" : config.db.path + config.db.file,
+    storage: isTest ? ":memory:" : config.db.complete_path,
     logging: (sql) => logger.debug(sql),
   });
 

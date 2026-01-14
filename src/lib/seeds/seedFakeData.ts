@@ -33,10 +33,10 @@ export async function seedUsers(count = 50) {
  * create random games
  * @param count number of games
  */
-export async function seedGames(count = 100) {
-  const owners = await db.Tables.User.findAll({ where: { role: "teacher" } });
+export async function seedGames(count = 100, role = "teacher") {
+  const owners = await db.Tables.User.findAll({ where: { role: role } });
   if (owners.length === 0) {
-    throw new Error("No teacher users found. Please seed users first.");
+    throw new Error(`No ${role} users found. Please seed users first.`);
   }
   const type = [ "WEB", "DESKTOP" ];
   const dbTechnos = await db.Tables.Technology.findAll();

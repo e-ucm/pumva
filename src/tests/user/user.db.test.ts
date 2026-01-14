@@ -1,3 +1,4 @@
+import { config } from "@/lib/config";
 import { db } from "@/lib/db";
 import { seedUsers } from "@/lib/seeds/seedFakeData";
 
@@ -5,6 +6,7 @@ describe("Sequelize + SQLite", () => {
   beforeAll(async () => {
       try {
         await db.sequelize.sync({ force: true });
+        await db.Functions.runSqlFile(config.db.views_sql_file);
       } catch (err) {
         console.error("Sequelize sync failed:", err);
       }
