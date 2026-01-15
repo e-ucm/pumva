@@ -18,7 +18,7 @@ config.db.sql_files_path = config.appFolder + "/" +  config.db.sql_files_subpath
 config.db.schema_sql_filename = '01-schema.sql'
 config.db.schema_sql_file = config.db.sql_files_path + "/" +  config.db.schema_sql_filename
 config.db.views_sql_filename = '02-views.sql'
-config.db.views_sql_file = config.db.sql_files_path + "/" +  config.db.schema_sql_filename
+config.db.views_sql_file = config.db.sql_files_path + "/" +  config.db.views_sql_filename
 
 config.api = {}
 config.api.host = process.env.PUMVA_HOST || 'simva-api.simva.external.test'
