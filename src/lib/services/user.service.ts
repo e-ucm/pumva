@@ -1,4 +1,6 @@
 import { db } from "@/lib/db";
+import { NotFoundError } from "@/lib/errors/notFoundError";
+
 /**
  * Get the list of users
  * @returns list of users
@@ -59,7 +61,7 @@ export async function updateUserById(userId: number, payload: Partial<InstanceTy
   return db.sequelize.transaction(async (t) => {
     const user = await db.Tables.User.findByPk(userId, { transaction: t });
     if (!user) {
-      throw new Error("User not found");
+      throw new NotFoundError("User not found");
     }
     await user.update(payload, { transaction: t });
     return user;
@@ -74,7 +76,7 @@ export async function deleteUserById(userId: number): Promise<void> {
   return db.sequelize.transaction(async (t) => {
     const user = await db.Tables.User.findByPk(userId, { transaction: t });
     if (!user) {
-      throw new Error("User not found");
+      throw new NotFoundError("User not found");
     }
     await user.destroy({ transaction: t });
   });

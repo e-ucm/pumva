@@ -18,6 +18,7 @@ describe("Sequelize + SQLite", () => {
   });
 
   afterAll(async () => {
+    await new Promise((r) => setTimeout(r, 100));
     await db.sequelize.close();
   });
 

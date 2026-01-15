@@ -2,6 +2,7 @@ import { createTechnology, getTechnologies, getTechnologyById, updateTechnologie
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import { NotFoundError } from "@/lib/errors/notFoundError";
 
 var technology : InstanceType<typeof db.Tables.Technology> | null;
 
@@ -16,6 +17,7 @@ describe("Technology service", () => {
   });
 
   afterAll(async () => {
+    await new Promise((r) => setTimeout(r, 100));
     await db.sequelize.close();
   });
 
@@ -40,6 +42,11 @@ describe("Technology service", () => {
       expect(technology.technology_id).toBeDefined();
       expect(technology.technology).toBe("Godot");
     }
+  });
+
+  it("update technology by id should throw when not technology id defined", async () => {
+      expect.assertions(1);
+      await expect(updateTechnology(9999, { technology: "Tot" })).rejects.toThrow(NotFoundError);
   });
 
   
@@ -68,7 +75,12 @@ describe("Technology service", () => {
       technology = await createTechnology("RPG Maker");
       expect(technology).toBeDefined();
       await deleteTechnologyById(technology!.technology_id);
-      technology = await getTechnologyById(technology!.technology_id);
-      expect(technology).toBeNull();
+      let deleted_technology = await getTechnologyById(technology!.technology_id);
+      expect(deleted_technology).toBeNull();
+    });
+
+    it("delete technology by id should throw when not technology id defined", async () => {
+        expect.assertions(1);
+        await expect(deleteTechnologyById(technology!.technology_id)).rejects.toThrow(NotFoundError);
     });
 });

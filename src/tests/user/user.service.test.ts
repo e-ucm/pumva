@@ -1,7 +1,8 @@
-import { createUser, getUserByUsername, getUsers, updateUsers, updateUserById, deleteUserById, deleteUsers } from "@/lib/services/user.service";
+import { createUser, getUserByUsername, getUsers, updateUsers, updateUserById, deleteUserById, deleteUsers, getUserById } from "@/lib/services/user.service";
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import { NotFoundError } from "@/lib/errors/notFoundError";
 
 var user : InstanceType<typeof db.Tables.User> | null;
 describe("User service", () => {
@@ -15,6 +16,7 @@ describe("User service", () => {
   });
 
   afterAll(async () => {
+    await new Promise((r) => setTimeout(r, 100));
     await db.sequelize.close();
   });
 
@@ -34,6 +36,15 @@ describe("User service", () => {
     expect(users.length).toBeGreaterThanOrEqual(1);
   });
 
+  it("fetches user By Id", async () => {
+    const get_user = await getUserById(user!.user_id);
+    expect(get_user).toBeDefined();
+    expect(get_user!.user_id).toBe(user!.user_id);
+    expect(get_user!.username).toBe(user!.username);
+    expect(get_user!.email).toBe(user!.email);
+    expect(get_user!.role).toBe(user!.role);
+  });
+
   it("update user by Id", async () => {
     user = await updateUserById(user!.user_id, { username: "Tot" });
     expect(user).toBeDefined();
@@ -44,8 +55,12 @@ describe("User service", () => {
       expect(user.role).toBe("tester");
     }
   });
-
   
+  it("update user by id should throw when not user id defined", async () => {
+    expect.assertions(1);
+    await expect(updateUserById(9999, { username: "Tot" })).rejects.toThrow(NotFoundError);
+  });
+
   it("update users", async () => {
     const nb = await updateUsers({ role: "tester" }, { email : "tot@test.com"});
     expect(nb).toBeDefined();
@@ -71,7 +86,12 @@ describe("User service", () => {
       user = await createUser("Charles", "charles@test.com", "tester");
       expect(user).toBeDefined();
       await deleteUserById(user!.user_id);
-      user = await getUserByUsername("Charles");
-      expect(user).toBeNull();
+      let deleted_user = await getUserByUsername("Charles");
+      expect(deleted_user).toBeNull();
+    });
+
+    it("delete user by id should throw when not user id defined", async () => {
+      expect.assertions(1);
+      await expect(deleteUserById(user!.user_id)).rejects.toThrow(NotFoundError);
     });
 });

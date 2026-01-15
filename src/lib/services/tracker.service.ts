@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { NotFoundError } from "@/lib/errors/notFoundError";
 
 /**
  * Get the list of trackers
@@ -50,7 +51,7 @@ export async function updateTracker(trackerId: number, payload: Partial<Instance
   return db.sequelize.transaction(async (t) => {
     const tracker = await db.Tables.Tracker.findByPk(trackerId, { transaction: t });
     if (!tracker) {
-      throw new Error("Tracker not found");
+      throw new NotFoundError("Tracker not found");
     }
     await tracker.update(payload, { transaction: t });
     return tracker;
@@ -65,7 +66,7 @@ export async function deleteTrackerById(trackerId: number): Promise<void> {
   return db.sequelize.transaction(async (t) => {
     const tracker = await db.Tables.Tracker.findByPk(trackerId, { transaction: t });
     if (!tracker) {
-      throw new Error("Tracker not found");
+      throw new NotFoundError("Tracker not found");
     }
     await tracker.destroy({ transaction: t });
   });

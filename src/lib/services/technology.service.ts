@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { NotFoundError } from "@/lib/errors/notFoundError";
 /**
  * Get the list of technologies
  * @returns list of technologies
@@ -47,7 +48,7 @@ export async function updateTechnology(technologyId: number, payload: Partial<In
   return db.sequelize.transaction(async (t) => {
     const technology = await db.Tables.Technology.findByPk(technologyId, { transaction: t });
     if (!technology) {
-      throw new Error("Technology not found");
+      throw new NotFoundError("Technology not found");
     }
     await technology.update(payload, { transaction: t });
     return technology;
@@ -62,7 +63,7 @@ export async function deleteTechnologyById(technologyId: number): Promise<void> 
   return db.sequelize.transaction(async (t) => {
     const technology = await db.Tables.Technology.findByPk(technologyId, { transaction: t });
     if (!technology) {
-      throw new Error("Technology not found");
+      throw new NotFoundError("Technology not found");
     }
     await technology.destroy({ transaction: t });
   });
