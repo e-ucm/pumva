@@ -73,18 +73,20 @@ export async function seedGames(count = 100, role = "teacher") {
 /**
  * Create technology list
  */
-export async function seedTechnologies() {
+export async function seedTechnologies(count = 7) {
   const technologies = [ "Unity", "Unreal Engine", "Godot", "CryEngine", "GameMaker Studio", "RPG Maker", "Phaser" ];
-  await db.Tables.Technology.bulkCreate(technologies.map(tech => ({ technology: tech })), { ignoreDuplicates : true });
+  await db.Tables.Technology.bulkCreate(technologies.slice(0, count).map(tech => ({ technology: tech })), { ignoreDuplicates : true });
 }
 
 /**
  * Create trackers list
+ * @param count number of trackers
  */
-export async function seedTrackers() {
+export async function seedTrackers(count = 2) {
   const dbTechnos = await db.Tables.Technology.findAll();
   const trackers = { "Unity" : "Xasu", "Phaser" : "JSTracker" };
-  const dbtrackers=Object.entries(trackers).map(([tech, tracker]) => {
+  const trackersArray = Object.entries(trackers).slice(0, count);
+  const dbtrackers=trackersArray.map(([tech, tracker]) => {
     const techObj = dbTechnos.find(t => t.technology === tech);
     return {
       technology_id: techObj ? techObj.technology_id : null,
