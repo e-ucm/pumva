@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { seedTechnologies } from "@/lib/seeds/seedFakeData";
 
+var technology : InstanceType<typeof db.Tables.Technology> | null;
 describe("Sequelize + SQLite", () => {
   beforeAll(async () => {
       try {
@@ -18,12 +19,7 @@ describe("Sequelize + SQLite", () => {
   });
 
   it("should create a technology if not present", async () => {
-    var technology = await db.Tables.Technology.findOne({ where: { technology: "Godot" } });
-    if (!technology) {
-      technology = await db.Tables.Technology.create({
-        technology: "Godot"
-      });
-    }
+    technology = await db.Tables.Technology.create({ technology: "Godot" });
     expect(technology.technology_id).toBeDefined();
     expect(technology.technology).toBe("Godot");
   });

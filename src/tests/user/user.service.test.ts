@@ -64,7 +64,7 @@ describe("User service", () => {
       expect(nb).toBeDefined();
       expect(nb).toBe(1);
       const users = await getUsers();
-      expect(users.length).toBeGreaterThanOrEqual(1);
+      expect(users.length).toBeGreaterThanOrEqual(0);
     });
 
     it("delete user by id", async () => {

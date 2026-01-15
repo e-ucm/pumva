@@ -2,6 +2,7 @@ import { config } from "@/lib/config";
 import { db } from "@/lib/db";
 import { seedUsers } from "@/lib/seeds/seedFakeData";
 
+var user : InstanceType<typeof db.Tables.User> | null;
 describe("Sequelize + SQLite", () => {
   beforeAll(async () => {
       try {
@@ -17,16 +18,15 @@ describe("Sequelize + SQLite", () => {
   });
 
   it("should create a user if not present", async () => {
-    var user = await db.Tables.User.findOne({ where: { username: "Alice" } });
-    if (!user) {
-      user = await db.Tables.User.create({
-        username: "Alice",
-        email: "alice@test.com",
-        role: "tester",
-      });
-    }
+    user = await db.Tables.User.create({
+      username: "Alice",
+      email: "alice@test.com",
+      role: "tester",
+    });
     expect(user.user_id).toBeDefined();
     expect(user.username).toBe("Alice");
+    expect(user.email).toBe("alice@test.com");
+    expect(user.role).toBe("tester");
   });
 
   it("should find all users", async () => {
@@ -36,12 +36,12 @@ describe("Sequelize + SQLite", () => {
   });
 
   it("should query user by username using view", async () => {
-    const results = await db.Functions.runViewQuery(
-      db.Views.Users.byUsername,
-      { username: "Alice" }
-    );
-    expect(results.length).toBe(1);
-    expect((results[0] as any).username).toBe("Alice");
+      const results = await db.Functions.runViewQuery(
+        db.Views.Users.byUsername,
+        { username: "Alice" }
+      );
+      expect(results.length).toBe(1);
+      expect((results[0] as any).username).toBe("Alice");
   });
 
   it("generate 10 users into DB", async () => {
