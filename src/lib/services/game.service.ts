@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { CompleteGamePermission } from "@/lib/views/gamesView.queries";
 /**
  * Get games
  * @returns all games
@@ -8,16 +9,26 @@ export async function getGames(): Promise<InstanceType<typeof db.Tables.Game>[]>
 }
 
 /**
+ * Get game by its game_id
+ * @param game_id game identifier
+ * @returns specified game
+ */
+export async function getGameById(game_id : number): Promise<InstanceType<typeof db.Tables.Game> | null> {
+    const result = await db.Tables.Game.findByPk(game_id);
+    return result;
+}
+
+/**
  * Get games for a specific user_id
  * @param user_id user identifier
  * @returns all games for the specified user
  */
-export async function getGamesByUser(user_id : number): Promise<any[]> {
+export async function getGamesByUser(user_id : number): Promise<CompleteGamePermission[]> {
      const results = await db.Functions.runViewQuery(
       db.Views.Games.byUser,
       { user_id }
     );
-    return results;
+    return results as CompleteGamePermission[];
 }
 
 /**
@@ -36,10 +47,52 @@ export async function createGame(name: string, isPublic : boolean, description :
 }
 
 /**
- * Delete a game
- * @param game_id the id of the game to delete
- * @returns the number of game row deleted (normally 1) 
+ * Update BULK games
+ * @param where options to select games to update
+ * @param payload partial game to updates
+ * @returns the number of updated games
  */
-export async function deleteGame(game_id: number): Promise<number> {
-  return db.Tables.Game.destroy({ where : { game_id }});
+export async function updateGames(where: Partial<InstanceType<typeof db.Tables.Game>>, payload : Partial<InstanceType<typeof db.Tables.Game>>): Promise<number> {
+  const [affectedRows] = await db.Tables.Game.update(payload, { where : where });
+  return affectedRows;
+}
+
+/**
+ * Update ONE game
+ * @param gameId game identifier
+ * @param payload partial game to update
+ * @returns the updated game 
+ */
+export async function updateGame(gameId: number, payload: Partial<InstanceType<typeof db.Tables.Game>>): Promise<InstanceType<typeof db.Tables.Game>> {
+  return db.sequelize.transaction(async (t) => {
+    const game = await db.Tables.Game.findByPk(gameId, { transaction: t });
+    if (!game) {
+      throw new Error("Game not found");
+    }
+    await game.update(payload, { transaction: t });
+    return game;
+  });
+}
+
+/**
+ * Delete game
+ * @param gameId game identifier to delete
+ */
+export async function deleteGameById(gameId: number): Promise<void> {
+  return db.sequelize.transaction(async (t) => {
+    const game = await db.Tables.Game.findByPk(gameId, { transaction: t });
+    if (!game) {
+      throw new Error("Game not found");
+    }
+    await game.destroy({ transaction: t });
+  });
+}
+
+/**
+ * Delete games
+ * @param where options to select games to delete
+ * @returns the number of games row deleted
+ */
+export async function deleteGames(where: Partial<InstanceType<typeof db.Tables.Game>>): Promise<number> {
+  return db.Tables.Game.destroy({ where });
 }

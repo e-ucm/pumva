@@ -2,6 +2,7 @@ import { config } from "@/lib/config";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { seedGames } from "@/lib/seeds/seedFakeData";
+import { CompleteGamePermission } from "@/lib/views/gamesView.queries";
 
 var user : InstanceType<typeof db.Tables.User> | null;
 var technology : InstanceType<typeof db.Tables.Technology> | null;
@@ -36,7 +37,6 @@ describe("Sequelize + SQLite", () => {
       } catch (err) {
         console.error("Sequelize sync failed:", err);
       }
-      
   });
 
   afterAll(async () => {
@@ -79,7 +79,7 @@ describe("Sequelize + SQLite", () => {
         { user_id : user?.user_id }
       );
       expect(results.length).toBe(1);
-      expect((results[0] as any).name).toBe("myGame");
+      expect((results[0] as CompleteGamePermission).name).toBe("myGame");
     } catch(e) {
       logger.error(e);
     }

@@ -1,3 +1,16 @@
+export class CompleteGameGuidePermission {
+  declare user_id: number;
+  declare username: string;
+  declare role: string;
+  declare email: string;
+  declare permission: string;
+  declare game_id: number;
+  declare language: string;
+  declare teacher_guide_url: boolean;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+}
+
 export function GuideGamesViews() {
   return {
     byUser: {

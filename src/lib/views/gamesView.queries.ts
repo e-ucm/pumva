@@ -1,3 +1,23 @@
+export class CompleteGamePermission {
+  declare user_id: number;
+  declare username: string;
+  declare role: string;
+  declare email: string;
+  declare permission: string;
+  declare game_id: number;
+  declare name: string;
+  declare public: boolean;
+  declare description: string;
+  declare owner_id: number;
+  declare type: string;
+  declare actual_version_id: number;
+  declare actual_version_url: string;
+  declare technology_name: string;
+  declare tracker_name: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+}
+
 export function GamesViews() {
   return {
     byUser: {
