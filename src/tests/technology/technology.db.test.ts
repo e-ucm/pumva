@@ -1,0 +1,43 @@
+import { config } from "@/lib/config";
+import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
+import { seedTechnologies } from "@/lib/seeds/seedFakeData";
+
+describe("Sequelize + SQLite", () => {
+  beforeAll(async () => {
+      try {
+        await db.sequelize.sync({ force: true });
+        await db.Functions.runSqlFile(config.db.views_sql_file);
+      } catch (err) {
+        console.error("Sequelize sync failed:", err);
+      }
+  });
+
+  afterAll(async () => {
+    await db.sequelize.close();
+  });
+
+  it("should create a technology if not present", async () => {
+    var technology = await db.Tables.Technology.findOne({ where: { technology: "Godot" } });
+    if (!technology) {
+      technology = await db.Tables.Technology.create({
+        technology: "Godot"
+      });
+    }
+    expect(technology.technology_id).toBeDefined();
+    expect(technology.technology).toBe("Godot");
+  });
+
+  it("should find all technologies", async () => {
+    const technologies = await db.Tables.Technology.findAll();
+    expect(technologies.length).toBeGreaterThanOrEqual(1);
+    expect(technologies[0].technology).toBe("Godot");
+  });
+
+  it("generate 7 technologies into DB", async () => {
+    await seedTechnologies(7);
+    const technologies = await db.Tables.Technology.findAll();
+    expect(technologies.length).toBeGreaterThanOrEqual(7);
+    expect(technologies[0].technology_id).toBeDefined();
+  });
+});
