@@ -18,7 +18,6 @@ export default function initFunctions(sequelize: Sequelize) {
     },
     runSqlFile : async(filePath: string) => {
       const sql = fs.readFileSync(filePath, "utf8");
-
       // Split only if needed (SQLite is fine with multiple statements)
       await sequelize.query(sql);
     }

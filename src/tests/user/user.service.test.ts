@@ -1,4 +1,4 @@
-import { createUser, getUserByUsername, getUsers, updateUsers, updateUserById, deleteUserById, deleteUsers, getUserById } from "@/lib/services/user.service";
+import { createUser, getUserByUsername, getUsers, updateUsers, updateUserById, deleteUserById, deleteUsers, getUserById } from "@/services/user.service";
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
@@ -9,7 +9,6 @@ describe("User service", () => {
   beforeAll(async () => {
     try {
       await db.sequelize.sync({ force: true });
-      await db.Functions.runSqlFile(config.db.views_sql_file);
     } catch (err) {
       console.error("Sequelize sync failed:", err);
     }
@@ -21,7 +20,7 @@ describe("User service", () => {
   });
 
   it("creates a user", async () => {
-    user = await createUser("Bob", "bob@test.com", "tester");
+    user = await createUser({username:"Bob", email:"bob@test.com", role:"tester"});
     expect(user).toBeDefined();
     if(user) {
       expect(user.user_id).toBeDefined();
@@ -83,7 +82,7 @@ describe("User service", () => {
     });
 
     it("delete user by id", async () => {
-      user = await createUser("Charles", "charles@test.com", "tester");
+      user = await createUser({username:"Charles", email:"charles@test.com", role: "tester"});
       expect(user).toBeDefined();
       await deleteUserById(user!.user_id);
       let deleted_user = await getUserByUsername("Charles");

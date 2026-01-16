@@ -30,13 +30,11 @@ export async function getUserByUsername(username: string): Promise<InstanceType<
 
 /**
  * Create an user 
- * @param username username of the user
- * @param email email of the user
- * @param role role of the user
+ * @param user partial of a user
  * @returns the user created
  */
-export async function createUser(username: string, email: string, role: string): Promise<InstanceType<typeof db.Tables.User> | null> {
-  return db.Tables.User.create({ username, email, role });
+export async function createUser(user : Partial<InstanceType<typeof db.Tables.User>>): Promise<InstanceType<typeof db.Tables.User> | null> {
+  return db.Tables.User.create(user);
 }
 
 

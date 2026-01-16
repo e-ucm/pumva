@@ -12,7 +12,6 @@ describe("Sequelize + SQLite", () => {
   beforeAll(async () => {
       try {
         await db.sequelize.sync({ force: true });
-        await db.Functions.runSqlFile(config.db.views_sql_file);
         user = await db.Tables.User.findOne({ where: { username: "Alice" } });
         if (!user) {
           user = await db.Tables.User.create({
@@ -40,6 +39,7 @@ describe("Sequelize + SQLite", () => {
   });
 
   afterAll(async () => {
+    await new Promise((r) => setTimeout(r, 100));
     await db.sequelize.close();
   });
 
@@ -82,6 +82,8 @@ describe("Sequelize + SQLite", () => {
       expect((results[0] as CompleteGamePermission).name).toBe("myGame");
     } catch(e) {
       logger.error(e);
+      expect(e).toBeNull();
+      throw e;
     }
   });
 

@@ -4,17 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbo",
-    "build": "next build",
-    "start": "next start",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
     "lint": "eslint",
     "rebuild-sqlite": "npm rebuild sqlite3",
     "seed": "npm run rebuild-sqlite && tsx src/lib/seeds/index.ts",
     "test": "npm run rebuild-sqlite && NODE_ENV=test jest --verbose --runInBand",
     "test:watch": "npm run rebuild-sqlite && NODE_ENV=test jest --watchAll --verbose --runInBand",
-    "test:coverage": "npm run rebuild-sqlite && NODE_ENV=test jest --coverage --verbose --runInBand"
+    "test:coverage": "npm run rebuild-sqlite && NODE_ENV=test jest --coverage --verbose --runInBand",
+    "class-docs": "npx typedoc --entryPoints src/lib --out docs --entryPointStrategy expand"
   },
   "dependencies": {
+    "express": "^5.2.1",
     "next": "16.1.1",
     "pino": "^10.1.0",
     "pino-pretty": "^13.1.3",
@@ -27,19 +29,22 @@
   "devDependencies": {
     "@faker-js/faker": "^7",
     "@tailwindcss/postcss": "^4",
+    "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.0.7",
+    "@types/node": "^25.0.8",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "jest": "^30.2.0",
+    "supertest": "^7.2.2",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }

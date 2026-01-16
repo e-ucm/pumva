@@ -1,4 +1,4 @@
-import { createTechnology, getTechnologies, getTechnologyById, updateTechnologies, updateTechnology, deleteTechnologies, deleteTechnologyById } from "@/lib/services/technology.service";
+import { createTechnology, getTechnologies, getTechnologyById, updateTechnologies, updateTechnology, deleteTechnologies, deleteTechnologyById } from "@/services/technology.service";
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";

@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { CompleteGamePermission } from "@/lib/views/gamesView.queries";
+import { NotFoundError } from "@/lib/errors/notFoundError";
 /**
  * Get games
  * @returns all games
@@ -24,7 +25,7 @@ export async function getGameById(game_id : number): Promise<InstanceType<typeof
  * @returns all games for the specified user
  */
 export async function getGamesByUser(user_id : number): Promise<CompleteGamePermission[]> {
-     const results = await db.Functions.runViewQuery(
+    const results = await db.Functions.runViewQuery(
       db.Views.Games.byUser,
       { user_id }
     );
@@ -67,7 +68,7 @@ export async function updateGame(gameId: number, payload: Partial<InstanceType<t
   return db.sequelize.transaction(async (t) => {
     const game = await db.Tables.Game.findByPk(gameId, { transaction: t });
     if (!game) {
-      throw new Error("Game not found");
+      throw new NotFoundError("Game not found");
     }
     await game.update(payload, { transaction: t });
     return game;
@@ -82,7 +83,7 @@ export async function deleteGameById(gameId: number): Promise<void> {
   return db.sequelize.transaction(async (t) => {
     const game = await db.Tables.Game.findByPk(gameId, { transaction: t });
     if (!game) {
-      throw new Error("Game not found");
+      throw new NotFoundError("Game not found");
     }
     await game.destroy({ transaction: t });
   });
