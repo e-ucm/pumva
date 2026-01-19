@@ -49,11 +49,31 @@ LEFT JOIN v_direct_permissions dp ON g.game_id = dp.game_id AND u.user_id = dp.u
 
 DROP VIEW IF EXISTS v_effective_permissions;
 CREATE VIEW v_effective_permissions AS
-SELECT * FROM v_owners_games
-UNION
-SELECT * FROM v_direct_permissions
-UNION
-SELECT * FROM v_public_games_permissions;
+SELECT 
+    game_id,
+    user_id,
+    username,
+    role,
+    email,
+    CASE 
+        WHEN MAX(CASE WHEN permission = 'OWNER' THEN 3 
+                      WHEN permission = 'WRITE' THEN 2 
+                      WHEN permission = 'READ' THEN 1 
+                      ELSE 0 END) = 3 THEN 'OWNER'
+        WHEN MAX(CASE WHEN permission = 'OWNER' THEN 3 
+                      WHEN permission = 'WRITE' THEN 2 
+                      WHEN permission = 'READ' THEN 1 
+                      ELSE 0 END) = 2 THEN 'WRITE'
+        ELSE 'READ'
+    END AS permission
+FROM (
+    SELECT * FROM v_owners_games
+    UNION ALL
+    SELECT * FROM v_direct_permissions
+    UNION ALL
+    SELECT * FROM v_public_games_permissions
+) AS all_permissions
+GROUP BY game_id, user_id, username, role, email;
 
 DROP VIEW IF EXISTS v_complete_game;
 CREATE VIEW v_complete_game AS
