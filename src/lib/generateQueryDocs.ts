@@ -1,9 +1,20 @@
 import * as views from "@/lib/views/index.js";
 
 /**
- * 
- * @param param 
- * @returns 
+ * Formats a parameter type for documentation display.
+ * Handles special array types and converts to readable format.
+ *
+ * @function formatType
+ * @param {Object} param - Parameter definition object
+ * @param {string} param.type - Type of the parameter
+ * @param {string} [param.of] - Element type for arrays
+ * @returns {string} Formatted type string (e.g., "array<string>", "number")
+ *
+ * @example
+ * ```typescript
+ * formatType({ type: "array", of: "string" }); // "array<string>"
+ * formatType({ type: "number" }); // "number"
+ * ```
  */
 function formatType(param: any): string {
   if (param.type === "array") {
@@ -12,6 +23,22 @@ function formatType(param: any): string {
   return param.type;
 }
 
+/**
+ * Generates Markdown documentation for all database view queries.
+ * Creates a formatted table of all available queries, their SQL, and parameters.
+ *
+ * @function generateDocs
+ * @returns {string} Markdown-formatted documentation string containing:
+ *   - Organized sections for each view
+ *   - SQL query templates
+ *   - Parameter tables with types and examples
+ *
+ * @example
+ * ```typescript
+ * const docs = generateDocs();
+ * console.log(docs); // Prints formatted Markdown documentation
+ * ```
+ */
 function generateDocs() {
   let md = "# Database View Queries\n\n";
 
@@ -48,4 +75,4 @@ function generateDocs() {
   return md;
 }
 
-module.exports = generateDocs;
+export = generateDocs;

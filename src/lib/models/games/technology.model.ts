@@ -1,5 +1,17 @@
 import { Sequelize, Model } from "sequelize";
 
+/**
+ * Represents a game technology/engine in the system.
+ * Stores information about different technologies that can be used to develop games.
+ * 
+ * @class Technology
+ * @extends {Model}
+ * 
+ * @property {number} technology_id - Unique identifier for the technology (primary key, auto-increment)
+ * @property {string} technology - Name of the technology (e.g., 'Unity', 'Unreal Engine', 'Godot')
+ * @property {Date} createdAt - Timestamp when the technology record was created
+ * @property {Date} updatedAt - Timestamp when the technology record was last updated
+ */
 export class Technology extends Model {
   declare technology_id: number;
   declare technology: string;
@@ -7,6 +19,24 @@ export class Technology extends Model {
   declare updatedAt: Date;
 }
 
+/**
+ * Factory function to initialize the Technology model with Sequelize.
+ * 
+ * @function TechnologyFactory
+ * @param {Sequelize} sequelize - The Sequelize instance to use for database connection
+ * @param {typeof import("sequelize").DataTypes} DataTypes - Sequelize DataTypes for field definitions
+ * @returns {typeof Technology} The initialized Technology model class
+ * 
+ * @example
+ * ```typescript
+ * const Technology = TechnologyFactory(sequelize, DataTypes);
+ * 
+ * // Create a new technology
+ * const tech = await Technology.create({
+ *   technology: 'Unity'
+ * });
+ * ```
+ */
 export function TechnologyFactory(
   sequelize: Sequelize,
   DataTypes: typeof import("sequelize").DataTypes

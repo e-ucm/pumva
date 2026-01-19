@@ -1,4 +1,30 @@
 import path from 'path';
+
+/**
+ * Application configuration object.
+ * 
+ * Loads configuration from environment variables with sensible defaults.
+ * Organizes configuration into logical groups: external_url, db, api, logger, shlink.
+ * 
+ * @type {Object}
+ * @property {string} external_url - External URL of the application
+ * @property {string} favicon_file - Path to favicon file
+ * @property {string} favicon_url - Full URL to favicon
+ * @property {boolean} debug - Enable debug logging
+ * @property {string} appFolder - Root application folder
+ * @property {Object} db - Database configuration
+ * @property {Object} api - API configuration
+ * @property {Object} logger - Logger configuration
+ * @property {Object} shlink - Shlink service configuration
+ * 
+ * @example
+ * ```typescript
+ * import { config } from '@/lib/config';
+ * 
+ * const apiUrl = config.api.url;
+ * const dbPath = config.db.complete_path;
+ * ```
+ */
 let config: any = {}
 
 let ignored_ports = [80, 8080, 443];

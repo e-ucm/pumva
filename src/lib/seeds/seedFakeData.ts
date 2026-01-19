@@ -3,7 +3,17 @@ import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 
 /**
- * Clear database
+ * Clears all data from the database tables.
+ * Deletes data in dependency order to respect foreign key constraints.
+ * 
+ * @async
+ * @function clearDatabase
+ * @returns {Promise<void>}
+ * 
+ * @example
+ * ```typescript
+ * await clearDatabase();
+ * ```
  */
 export async function clearDatabase() {
   await db.Tables.TeacherGuide.destroy({ where: {} });
@@ -16,8 +26,18 @@ export async function clearDatabase() {
 }
 
 /**
- * create random users
- * @param count number of users
+ * Creates and inserts randomly generated users into the database.
+ * 
+ * @async
+ * @function seedUsers
+ * @param {number} [count=50] - Number of users to generate and insert
+ * @returns {Promise<void>}
+ * @throws {Error} If database operation fails
+ * 
+ * @example
+ * ```typescript
+ * await seedUsers(20); // Create 20 random users
+ * ```
  */
 export async function seedUsers(count = 50) {
   const users = Array.from({ length: count }).map(() => ({
@@ -30,8 +50,20 @@ export async function seedUsers(count = 50) {
 }
 
 /**
- * create random games
- * @param count number of games
+ * Creates and inserts randomly generated games into the database.
+ * Games are assigned to existing users with a specified role (default: 'teacher').
+ * 
+ * @async
+ * @function seedGames
+ * @param {number} [count=100] - Number of games to generate
+ * @param {string} [role="teacher"] - User role to filter game owners
+ * @returns {Promise<void>}
+ * @throws {Error} If no users with the specified role exist or database operation fails
+ * 
+ * @example
+ * ```typescript
+ * await seedGames(50, 'teacher'); // Create 50 games owned by teachers
+ * ```
  */
 export async function seedGames(count = 100, role = "teacher") {
   const owners = await db.Tables.User.findAll({ where: { role: role } });
@@ -71,7 +103,19 @@ export async function seedGames(count = 100, role = "teacher") {
 }
 
 /**
- * Create technology list
+ * Creates and inserts technology entries into the database.
+ * Populates a predefined list of game engines and development technologies.
+ * 
+ * @async
+ * @function seedTechnologies
+ * @param {number} [count=7] - Number of technologies to insert (max 7 available)
+ * @returns {Promise<void>}
+ * @throws {Error} If database operation fails
+ * 
+ * @example
+ * ```typescript
+ * await seedTechnologies(7); // Insert all 7 predefined technologies
+ * ```
  */
 export async function seedTechnologies(count = 7) {
   const technologies = [ "Unity", "Unreal Engine", "Godot", "CryEngine", "GameMaker Studio", "RPG Maker", "Phaser" ];
@@ -79,8 +123,19 @@ export async function seedTechnologies(count = 7) {
 }
 
 /**
- * Create trackers list
- * @param count number of trackers
+ * Creates and inserts tracker entries into the database.
+ * Associates trackers with technologies for game analytics.
+ * 
+ * @async
+ * @function seedTrackers
+ * @param {number} [count=2] - Number of trackers to insert (max 2 predefined)
+ * @returns {Promise<void>}
+ * @throws {Error} If database operation fails
+ * 
+ * @example
+ * ```typescript
+ * await seedTrackers(2); // Insert all predefined trackers
+ * ```
  */
 export async function seedTrackers(count = 2) {
   const dbTechnos = await db.Tables.Technology.findAll();
@@ -100,8 +155,19 @@ export async function seedTrackers(count = 2) {
 }
 
 /**
- * Create games versions list
- * @param count number of games version
+ * Creates and inserts game version records into the database.
+ * Randomly assigns versions to existing games.
+ * 
+ * @async
+ * @function seedGameVersions
+ * @param {number} [count=100] - Number of game versions to generate
+ * @returns {Promise<void>}
+ * @throws {Error} If no games exist or database operation fails
+ * 
+ * @example
+ * ```typescript
+ * await seedGameVersions(200); // Create 200 random game versions
+ * ```
  */
 export async function seedGameVersions(count = 100) {
   // Implement game version seeding if needed
@@ -120,8 +186,19 @@ export async function seedGameVersions(count = 100) {
 } 
 
 /**
- * Create languages list
- * @param count number of languages
+ * Creates and inserts language entries into the database.
+ * Randomly selects from a predefined list of common languages.
+ * 
+ * @async
+ * @function seedLanguages
+ * @param {number} [count=100] - Number of language entries to generate
+ * @returns {Promise<void>}
+ * @throws {Error} If database operation fails
+ * 
+ * @example
+ * ```typescript
+ * await seedLanguages(12); // Create 12 language entries
+ * ```
  */
 export async function seedLanguages(count = 100) {
   const languages = Array.from({ length: count }).map(() => {
@@ -134,8 +211,19 @@ export async function seedLanguages(count = 100) {
 
 
 /**
- * Create random teacher guides list
- * @param count number of teachers guides
+ * Creates and inserts teacher guide records into the database.
+ * Randomly matches existing games and languages.
+ * 
+ * @async
+ * @function seedTeachersGuides
+ * @param {number} [count=100] - Number of teacher guides to generate
+ * @returns {Promise<void>}
+ * @throws {Error} If no games or languages exist or database operation fails
+ * 
+ * @example
+ * ```typescript
+ * await seedTeachersGuides(50); // Create 50 random teacher guides
+ * ```
  */
 export async function seedTeachersGuides(count = 100) {
   const dbGames = await db.Tables.Game.findAll();
@@ -156,6 +244,21 @@ export async function seedTeachersGuides(count = 100) {
   await db.Tables.TeacherGuide.bulkCreate(guides, { ignoreDuplicates : true });
 }
 
+/**
+ * Creates and inserts game permission records into the database.
+ * Randomly assigns permissions (READ, WRITE) between users and games.
+ * 
+ * @async
+ * @function seedUserPermision
+ * @param {number} [count=100] - Number of permission records to generate
+ * @returns {Promise<void>}
+ * @throws {Error} If no games or users exist or database operation fails
+ * 
+ * @example
+ * ```typescript
+ * await seedUserPermision(200); // Create 200 random game permissions
+ * ```
+ */
 export async function seedUserPermision(count = 100) {
   const dbGames = await db.Tables.Game.findAll();
   if (dbGames.length === 0) {
@@ -176,7 +279,19 @@ export async function seedUserPermision(count = 100) {
 }
 
 /**
- * Main function to seed into database
+ * Main seeding function that orchestrates all database population.
+ * Clears existing data and then seeds all tables in the correct order.
+ * 
+ * @async
+ * @function seedFakeData
+ * @returns {Promise<void>}
+ * @throws {Error} If any seeding step fails
+ * 
+ * @example
+ * ```typescript
+ * // Run: npm run seed
+ * await seedFakeData();
+ * ```
  */
 export async function seedFakeData() {
   logger.info("Starting database seeding...");

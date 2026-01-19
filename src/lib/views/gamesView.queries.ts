@@ -1,3 +1,27 @@
+/**
+ * Represents a complete game permission record from the database view.
+ * Contains aggregated data from games, permissions, users, technologies, and trackers.
+ * 
+ * @class CompleteGamePermission
+ * 
+ * @property {number} user_id - ID of the user with permission
+ * @property {string} username - Username of the user
+ * @property {string} role - Role of the user
+ * @property {string} email - Email of the user
+ * @property {string} permission - Permission type (READ, WRITE)
+ * @property {number} game_id - ID of the game
+ * @property {string} name - Name of the game
+ * @property {boolean} public - Whether the game is public
+ * @property {string} description - Game description
+ * @property {number} owner_id - ID of the game owner
+ * @property {string} type - Game type (WEB, DESKTOP)
+ * @property {number} actual_version_id - ID of the current version
+ * @property {string} actual_version_url - URL of the current version
+ * @property {string} technology_name - Name of the technology used
+ * @property {string} tracker_name - Name of the tracker used
+ * @property {Date} createdAt - Record creation timestamp
+ * @property {Date} updatedAt - Record update timestamp
+ */
 export class CompleteGamePermission {
   declare user_id: number;
   declare username: string;
@@ -18,6 +42,23 @@ export class CompleteGamePermission {
   declare updatedAt: Date;
 }
 
+/**
+ * Returns a collection of predefined database view queries for games.
+ * 
+ * @function GamesViews
+ * @returns {Object} Object containing named query templates:
+ *   - byUser: Query games for a specific user with their permissions
+ *   - publicGames: Query all publicly available games
+ * 
+ * @example
+ * ```typescript
+ * const views = GamesViews();
+ * const result = await db.Functions.runViewQuery(
+ *   views.byUser,
+ *   { user_id: 123 }
+ * );
+ * ```
+ */
 export function GamesViews() {
   return {
     byUser: {

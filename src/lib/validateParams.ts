@@ -1,3 +1,12 @@
+/**
+ * Validation rule for a single parameter.
+ * 
+ * @typedef {Object} ValidationRule
+ * @property {string} type - Data type (string, number, boolean, array)
+ * @property {boolean} [required] - Whether the parameter is required
+ * @property {string} [default] - Default value if not provided
+ * @property {string} [of] - Element type for array parameters
+ */
 interface ValidationRule {
     type: "string" | "number" | "boolean" | "array";
     required?: boolean;
@@ -5,14 +14,45 @@ interface ValidationRule {
     of?: string;
 }
 
+/**
+ * Validation schema mapping parameter names to their validation rules.
+ * 
+ * @typedef {Object} Schema
+ */
 interface Schema {
     [key: string]: ValidationRule;
 }
 
+/**
+ * Object containing parameter values to validate.
+ * 
+ * @typedef {Object} Params
+ */
 interface Params {
     [key: string]: any;
 }
 
+/**
+ * Validates a set of parameters against a schema.
+ * Enforces type checking, required fields, and default values.
+ * 
+ * @function validateParams
+ * @param {Schema} schema - Validation schema defining expected parameters
+ * @param {Params} params - Parameters to validate (modified in place with defaults)
+ * @throws {Error} If validation fails
+ * 
+ * @example
+ * ```typescript
+ * const schema = {
+ *   userId: { type: 'number', required: true },
+ *   limit: { type: 'number', default: '10' },
+ *   tags: { type: 'array', of: 'string' }
+ * };
+ * 
+ * validateParams(schema, { userId: 123, tags: ['a', 'b'] });
+ * // Adds limit: '10' as default
+ * ```
+ */
 export function validateParams(schema: Schema, params: Params): void {
     for (const [key, rules] of Object.entries(schema)) {
         let value = params[key];

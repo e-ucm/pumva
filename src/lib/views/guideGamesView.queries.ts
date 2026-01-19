@@ -1,3 +1,20 @@
+/**
+ * Represents a complete game guide permission record from the database view.
+ * Contains aggregated data from games, guides, languages, and permissions.
+ * 
+ * @class CompleteGameGuidePermission
+ * 
+ * @property {number} user_id - ID of the user with permission
+ * @property {string} username - Username of the user
+ * @property {string} role - Role of the user
+ * @property {string} email - Email of the user
+ * @property {string} permission - Permission type (READ, WRITE)
+ * @property {number} game_id - ID of the game
+ * @property {string} language - Language of the teacher guide
+ * @property {boolean} teacher_guide_url - URL of the teacher guide
+ * @property {Date} createdAt - Record creation timestamp
+ * @property {Date} updatedAt - Record update timestamp
+ */
 export class CompleteGameGuidePermission {
   declare user_id: number;
   declare username: string;
@@ -11,6 +28,22 @@ export class CompleteGameGuidePermission {
   declare updatedAt: Date;
 }
 
+/**
+ * Returns a collection of predefined database view queries for game guides.
+ * 
+ * @function GuideGamesViews
+ * @returns {Object} Object containing named query templates:
+ *   - byUser: Query guide permissions for a specific user and game combination
+ * 
+ * @example
+ * ```typescript
+ * const views = GuideGamesViews();
+ * const result = await db.Functions.runViewQuery(
+ *   views.byUser,
+ *   { user_id: 123, game_id: 456 }
+ * );
+ * ```
+ */
 export function GuideGamesViews() {
   return {
     byUser: {

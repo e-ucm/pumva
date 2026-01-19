@@ -3,6 +3,30 @@ import fs from 'fs';
 import path from 'path';
 import { config } from '@/lib/config';
 
+/**
+ * Pino logger instance for application-wide logging.
+ * 
+ * Configured with:
+ * - File output to timestamped log files
+ * - Pretty-printed console output (development)
+ * - Redaction of sensitive configuration values
+ * - Process tag for tracking log origin
+ * 
+ * Global error handlers catch uncaught exceptions and unhandled rejections.
+ * 
+ * @type {import('pino').Logger}
+ * @global
+ * 
+ * @example
+ * ```typescript
+ * import { logger } from '@/lib/logger';
+ * 
+ * logger.info('Application started');
+ * logger.error(new Error('Something went wrong'));
+ * logger.debug('Debug information', { data: 'value' });
+ * ```
+ */
+
 const logsFolder = config.logger.folder;
 
 // Ensure logs folder exists

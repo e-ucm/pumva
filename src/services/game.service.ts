@@ -1,18 +1,35 @@
 import { db } from "@/lib/db";
 import { CompleteGamePermission } from "@/lib/views/gamesView.queries";
 import { NotFoundError } from "@/lib/errors/notFoundError";
+
 /**
- * Get games
- * @returns all games
+ * Retrieves all games from the database.
+ * 
+ * @async
+ * @function getGames
+ * @returns {Promise<Array>} Array of all game records
+ * 
+ * @example
+ * ```typescript
+ * const games = await getGames();
+ * ```
  */
 export async function getGames(): Promise<InstanceType<typeof db.Tables.Game>[]> {
    return db.Tables.Game.findAll();
 }
 
 /**
- * Get game by its game_id
- * @param game_id game identifier
- * @returns specified game
+ * Retrieves a single game by its ID.
+ * 
+ * @async
+ * @function getGameById
+ * @param {number} game_id - The game identifier
+ * @returns {Promise<Object|null>} The game record or null if not found
+ * 
+ * @example
+ * ```typescript
+ * const game = await getGameById(123);
+ * ```
  */
 export async function getGameById(game_id : number): Promise<InstanceType<typeof db.Tables.Game> | null> {
     const result = await db.Tables.Game.findByPk(game_id);
@@ -20,9 +37,17 @@ export async function getGameById(game_id : number): Promise<InstanceType<typeof
 }
 
 /**
- * Get games for a specific user_id
- * @param user_id user identifier
- * @returns all games for the specified user
+ * Retrieves all games accessible to a specific user with their permissions.
+ * 
+ * @async
+ * @function getGamesByUser
+ * @param {number} user_id - The user identifier
+ * @returns {Promise<Array>} Array of game records with permission information
+ * 
+ * @example
+ * ```typescript
+ * const userGames = await getGamesByUser(456);
+ * ```
  */
 export async function getGamesByUser(user_id : number): Promise<CompleteGamePermission[]> {
     const results = await db.Functions.runViewQuery(
@@ -33,25 +58,43 @@ export async function getGamesByUser(user_id : number): Promise<CompleteGamePerm
 }
 
 /**
- * Create a game
- * @param name game name
- * @param isPublic public or private game
- * @param description game description
- * @param type game type
- * @param owner_id game owner id
- * @param technology_id game technology id
- * @param tracker_id game tracker id
- * @returns the game created
+ * Creates a new game in the database.
+ * 
+ * @async
+ * @function createGame
+ * @param {string} name - Game name
+ * @param {boolean} isPublic - Whether the game is publicly accessible
+ * @param {string} description - Game description
+ * @param {string} type - Game type (e.g., 'WEB', 'DESKTOP')
+ * @param {number} owner_id - User ID of the game owner
+ * @param {number} technology_id - Technology ID used by the game
+ * @param {number} tracker_id - Tracker ID associated with the game
+ * @returns {Promise<Object>} The created game record
+ * 
+ * @throws {Error} If database operation fails
+ * 
+ * @example
+ * ```typescript
+ * const game = await createGame('My Game', true, 'A fun game', 'WEB', 1, 2, 3);
+ * ```
  */
 export async function createGame(name: string, isPublic : boolean, description : string, type: string, owner_id : number, technology_id : number, tracker_id : number): Promise<InstanceType<typeof db.Tables.Game>> {
   return db.Tables.Game.create({ name, public: isPublic, description, type, owner_id, technology_id, tracker_id });
 }
 
 /**
- * Update BULK games
- * @param where options to select games to update
- * @param payload partial game to updates
- * @returns the number of updated games
+ * Updates multiple games matching a condition.
+ * 
+ * @async
+ * @function updateGames
+ * @param {Object} where - Condition to find games to update
+ * @param {Object} payload - Partial game data to update
+ * @returns {Promise<number>} Number of affected rows
+ * 
+ * @example
+ * ```typescript
+ * const updated = await updateGames({ type: 'WEB' }, { public: true });
+ * ```
  */
 export async function updateGames(where: Partial<InstanceType<typeof db.Tables.Game>>, payload : Partial<InstanceType<typeof db.Tables.Game>>): Promise<number> {
   const [affectedRows] = await db.Tables.Game.update(payload, { where : where });
@@ -59,10 +102,20 @@ export async function updateGames(where: Partial<InstanceType<typeof db.Tables.G
 }
 
 /**
- * Update ONE game
- * @param gameId game identifier
- * @param payload partial game to update
- * @returns the updated game 
+ * Updates a single game by ID within a transaction.
+ * 
+ * @async
+ * @function updateGame
+ * @param {number} gameId - The game identifier
+ * @param {Object} payload - Partial game data to update
+ * @returns {Promise<Object>} The updated game record
+ * 
+ * @throws {NotFoundError} If game with given ID does not exist
+ * 
+ * @example
+ * ```typescript
+ * const updated = await updateGame(123, { name: 'New Name' });
+ * ```
  */
 export async function updateGame(gameId: number, payload: Partial<InstanceType<typeof db.Tables.Game>>): Promise<InstanceType<typeof db.Tables.Game>> {
   return db.sequelize.transaction(async (t) => {
@@ -76,8 +129,19 @@ export async function updateGame(gameId: number, payload: Partial<InstanceType<t
 }
 
 /**
- * Delete game
- * @param gameId game identifier to delete
+ * Deletes a single game by ID within a transaction.
+ * 
+ * @async
+ * @function deleteGameById
+ * @param {number} gameId - The game identifier
+ * @returns {Promise<void>}
+ * 
+ * @throws {NotFoundError} If game with given ID does not exist
+ * 
+ * @example
+ * ```typescript
+ * await deleteGameById(123);
+ * ```
  */
 export async function deleteGameById(gameId: number): Promise<void> {
   return db.sequelize.transaction(async (t) => {
@@ -90,9 +154,17 @@ export async function deleteGameById(gameId: number): Promise<void> {
 }
 
 /**
- * Delete games
- * @param where options to select games to delete
- * @returns the number of games row deleted
+ * Deletes multiple games matching a condition.
+ * 
+ * @async
+ * @function deleteGames
+ * @param {Object} where - Condition to find games to delete
+ * @returns {Promise<number>} Number of deleted rows
+ * 
+ * @example
+ * ```typescript
+ * const deleted = await deleteGames({ owner_id: 1 });
+ * ```
  */
 export async function deleteGames(where: Partial<InstanceType<typeof db.Tables.Game>>): Promise<number> {
   return db.Tables.Game.destroy({ where });

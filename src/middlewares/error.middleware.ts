@@ -1,5 +1,22 @@
 import { Request, Response, NextFunction } from "express";
 
+/**
+ * Express error handling middleware.
+ * Catches and formats errors passed through the error handling chain.
+ * Returns appropriate HTTP status codes and error messages.
+ *
+ * @middleware
+ * @param {Error} err - The error object
+ * @param {Request} _req - Express request object (unused)
+ * @param {Response} res - Express response object
+ * @param {NextFunction} _next - Express next function (unused)
+ * @returns {void} Sends JSON error response
+ *
+ * @example
+ * ```typescript
+ * app.use(errorMiddleware);
+ * ```
+ */
 export function errorMiddleware(
   err: any,
   _req: Request,
