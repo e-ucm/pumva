@@ -27,10 +27,9 @@ describe("/api/users", () => {
 
   it("GET returns empty array initially", async () => {
     const response = await request(app).get('/users');
-    expect(response).toBeDefined();
-    if(response) {
-      expect(response).toEqual([]);
-    }
+    const data : InstanceType<typeof db.Tables.User>[] = response.body;
+    expect(data).toBeDefined();
+    expect(data).toEqual([]);
   });
 
   it("POST creates a user", async () => {
@@ -42,20 +41,23 @@ describe("/api/users", () => {
         });
     expect(response).toBeDefined();
     logger.info(response);
-    expect(response.user_id).toBeDefined();
-    expect(response.username).toBe("Charlie");
+    const data : InstanceType<typeof db.Tables.User> = response.body;
+    logger.info(data);
+    expect(data.user_id).toBeDefined();
+    expect(data.username).toBe("Charlie");
   });
 
   it("GET returns user after creation", async () => {
-    const response = await request(app).get('/users').send(JSON.stringify({ params: { username: "Charlie" }}));
+    const response = await request(app).get('/users').query({ username: "Charlie" });
     expect(response).toBeDefined();
-    logger.info(response);
-    expect(response.username).toBe("Charlie");
+    const data : InstanceType<typeof db.Tables.User> = response.body;
+    logger.info(data);
+    expect(data.username).toBe("Charlie");
   });
 
   it("GET returns none user for username that doesn't exist", async () => {
-    const response = await request(app).get('/users').send(JSON.stringify({ params: { username: "Toto" }}));
-    logger.info(response);
-    expect(response).toBeNull();
+    const response = await request(app).get('/users').query({ username: "Toto" });
+    logger.info(response.body);
+    expect(response.body).toBeNull();
   });
 });
