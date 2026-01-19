@@ -12,6 +12,7 @@ describe("Sequelize + SQLite", () => {
   beforeAll(async () => {
       try {
         await db.sequelize.sync({ force: true });
+        await db.Functions.runSqlFile(config.db.views_sql_file);
         user = await db.Tables.User.findOne({ where: { username: "Alice" } });
         if (!user) {
           user = await db.Tables.User.create({
