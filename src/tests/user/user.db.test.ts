@@ -2,6 +2,9 @@ import { config } from "@/lib/config";
 import { db } from "@/lib/db";
 import { seedUsers } from "@/lib/seeds/seedFakeData";
 
+/**
+ * Verifies direct Sequelize interactions and seeded data for users.
+ */
 var user : InstanceType<typeof db.Tables.User> | null;
 describe("Sequelize + SQLite", () => {
   beforeAll(async () => {

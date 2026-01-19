@@ -6,6 +6,9 @@ import { NotFoundError } from "@/lib/errors/notFoundError";
 
 var technology : InstanceType<typeof db.Tables.Technology> | null;
 
+/**
+ * Integration tests for technology service CRUD operations and error handling.
+ */
 describe("Technology service", () => {
   beforeAll(async () => {
     try {

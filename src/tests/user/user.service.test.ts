@@ -5,6 +5,9 @@ import { logger } from "@/lib/logger";
 import { NotFoundError } from "@/lib/errors/notFoundError";
 
 var user : InstanceType<typeof db.Tables.User> | null;
+/**
+ * Integration tests for user service CRUD operations and related error handling.
+ */
 describe("User service", () => {
   beforeAll(async () => {
     try {

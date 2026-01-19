@@ -3,6 +3,9 @@ import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { seedTechnologies } from "@/lib/seeds/seedFakeData";
 
+/**
+ * Verifies direct Sequelize interactions and seeded data for technologies.
+ */
 var technology : InstanceType<typeof db.Tables.Technology> | null;
 describe("Sequelize + SQLite", () => {
   beforeAll(async () => {

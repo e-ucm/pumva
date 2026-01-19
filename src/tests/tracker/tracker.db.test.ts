@@ -6,6 +6,9 @@ import { seedTechnologies, seedTrackers } from "@/lib/seeds/seedFakeData";
 var technology : InstanceType<typeof db.Tables.Technology> | null;
 var tracker : InstanceType<typeof db.Tables.Tracker> | null;
 
+/**
+ * Verifies direct Sequelize interactions and seeded data for trackers.
+ */
 describe("Sequelize + SQLite", () => {
   beforeAll(async () => {
       try {

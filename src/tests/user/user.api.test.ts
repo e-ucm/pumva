@@ -4,6 +4,9 @@ import { config } from "@/lib/config";
 import { db } from "@/lib/db";
 import { logger } from '@/lib/logger';
 
+/**
+ * HTTP API tests for user endpoints.
+ */
 describe("/api/users", () => {
   beforeAll(async () => {
     try {
@@ -17,12 +20,6 @@ describe("/api/users", () => {
   afterAll(async () => {
     await new Promise((r) => setTimeout(r, 100));
     await db.sequelize.close();
-  });
-
-  it("GET heath return ok", async () => {
-    const res = await request(app).get('/health');
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual({ status: 'ok' });
   });
 
   it("GET returns empty array initially", async () => {

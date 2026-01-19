@@ -13,6 +13,9 @@ var tracker : InstanceType<typeof db.Tables.Tracker> | null;
 var game : InstanceType<typeof db.Tables.Game> | null;
 var user : InstanceType<typeof db.Tables.User> | null;
 
+/**
+ * Integration tests for game service CRUD operations and view queries.
+ */
 describe("Game service", () => {
   beforeAll(async () => {
     try {

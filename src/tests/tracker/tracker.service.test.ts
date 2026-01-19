@@ -9,6 +9,9 @@ import { NotFoundError } from "@/lib/errors/notFoundError";
 var technology : InstanceType<typeof db.Tables.Technology> | null;
 var tracker : InstanceType<typeof db.Tables.Tracker> | null;
 
+/**
+ * Integration tests for tracker service CRUD operations and error scenarios.
+ */
 describe("Tracker service", () => {
   beforeAll(async () => {
     try {

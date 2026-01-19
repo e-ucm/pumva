@@ -4,11 +4,14 @@ import { logger } from "@/lib/logger";
 import { seedGames } from "@/lib/seeds/seedFakeData";
 import { CompleteGamePermission } from "@/lib/views/gamesView.queries";
 
-var user : InstanceType<typeof db.Tables.User> | null;
-var technology : InstanceType<typeof db.Tables.Technology> | null;
-var tracker : InstanceType<typeof db.Tables.Tracker> | null;
-
+/**
+ * Verifies direct Sequelize interactions, view queries, and seeded data for games.
+ */
 describe("Sequelize + SQLite", () => {
+  var user : InstanceType<typeof db.Tables.User> | null;
+  var technology : InstanceType<typeof db.Tables.Technology> | null;
+  var tracker : InstanceType<typeof db.Tables.Tracker> | null;
+
   beforeAll(async () => {
       try {
         await db.sequelize.sync({ force: true });

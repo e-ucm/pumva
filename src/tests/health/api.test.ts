@@ -3,6 +3,9 @@ import { app } from '@/app';
 import { config } from "@/lib/config";
 import { db } from "@/lib/db";
 
+/**
+ * Health check endpoint validation for the API.
+ */
 describe("/api", () => {
   afterAll(async () => {
     await new Promise((r) => setTimeout(r, 100));
