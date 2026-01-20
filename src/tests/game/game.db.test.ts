@@ -38,7 +38,7 @@ describe("Sequelize + SQLite", () => {
           });
         }
       } catch (err) {
-        console.error("Sequelize sync failed:", err);
+        logger.error({ err }, "Sequelize sync failed");
       }
   });
 
