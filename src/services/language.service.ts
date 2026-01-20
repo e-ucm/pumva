@@ -52,9 +52,9 @@ export async function getLanguageById(
  * ```
  */
 export async function createLanguage(
-  language: string
+  language: Partial<InstanceType<typeof db.Tables.Language>>
 ): Promise<InstanceType<typeof db.Tables.Language>> {
-  return db.Tables.Language.create({ language });
+  return db.Tables.Language.create(language);
 }
 
 /**

@@ -425,14 +425,18 @@ export async function seedFakeData() {
   logger.debug("Starting database seeding...");
   await clearDatabase();
   logger.debug("Cleared database.");
-
+  await db.Tables.User.create({
+      username:"teacher",
+      email:"teacher@example.com",
+      role: "teacher",
+  });
   await seedUsers(20);
   logger.debug("Seeded 20 users.");
   await seedTechnologies();
   logger.debug("Seeded technologies.");
   await seedTrackers();
   logger.debug("Seeded trackers.");
-  await seedGames(100);
+  await seedGames(100, "teacher");
   logger.debug("Seeded 100 games.");
   await seedGameVersions(200);
   logger.debug("Seeded 200 game versions.");

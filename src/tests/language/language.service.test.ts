@@ -33,7 +33,7 @@ describe("Language service", () => {
   });
 
   it("creates a language", async () => {
-    language = await createLanguage("English");
+    language = await createLanguage({ language: "English" });
     expect(language).toBeDefined();
     expect(language.language_id).toBeDefined();
     expect(language.language).toBe("English");
@@ -79,8 +79,8 @@ describe("Language service", () => {
   });
 
   it("creates multiple languages", async () => {
-    const spanish = await createLanguage("Spanish");
-    const french = await createLanguage("French");
+    const spanish = await createLanguage({ language: "Spanish" });
+    const french = await createLanguage({ language: "French" });
     
     expect(spanish).toBeDefined();
     expect(spanish.language).toBe("Spanish");
@@ -101,7 +101,7 @@ describe("Language service", () => {
   });
 
   it("delete language by id", async () => {
-    const german = await createLanguage("German");
+    const german = await createLanguage({ language: "German" });
     expect(german).toBeDefined();
     
     await deleteLanguageById(german.language_id);

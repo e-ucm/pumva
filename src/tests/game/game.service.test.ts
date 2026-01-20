@@ -36,7 +36,7 @@ describe("Game service", () => {
 
   it("creates a game", async () => {
     var gameDescription="Conectado is a video game that has been designed and developed with the aim of raising awareness on bullying and cyberbullying through emotions.";
-    game = await createGame("Connectado", false, gameDescription, "WEB", user!.user_id, technology!.technology_id, tracker!.tracker_id);
+    game = await createGame({ name: "Connectado", public: false, description: gameDescription, type: "WEB", owner_id: user!.user_id, technology_id: technology!.technology_id, tracker_id: tracker!.tracker_id});
     expect(game).toBeDefined();
     if(game) {
       expect(game.game_id).toBeDefined();
@@ -109,7 +109,15 @@ describe("Game service", () => {
     });
 
     it("delete game by id", async () => {
-      game = await createGame("MathGame", false, "game about learning math", "WEB", user!.user_id, technology!.technology_id, tracker!.tracker_id);
+      game = await createGame({
+        name: "MathGame",
+        public: false,
+        description: "game about learning math",
+        type: "WEB",
+        owner_id: user!.user_id,
+        technology_id: technology!.technology_id,
+        tracker_id: tracker!.tracker_id
+      });
       expect(game).toBeDefined();
       expect(game!.game_id).toBeDefined();
       await deleteGameById(game!.game_id);

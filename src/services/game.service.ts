@@ -78,8 +78,8 @@ export async function getGamesByUser(user_id : number): Promise<CompleteGamePerm
  * const game = await createGame('My Game', true, 'A fun game', 'WEB', 1, 2, 3);
  * ```
  */
-export async function createGame(name: string, isPublic : boolean, description : string, type: string, owner_id : number, technology_id : number, tracker_id : number): Promise<InstanceType<typeof db.Tables.Game>> {
-  return db.Tables.Game.create({ name, public: isPublic, description, type, owner_id, technology_id, tracker_id });
+export async function createGame(game : Partial<InstanceType<typeof db.Tables.Game>>): Promise<InstanceType<typeof db.Tables.Game>> {
+  return db.Tables.Game.create(game);
 }
 
 /**
