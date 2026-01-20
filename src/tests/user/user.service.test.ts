@@ -13,7 +13,7 @@ describe("User service", () => {
     try {
       await db.sequelize.sync({ force: true });
     } catch (err) {
-      console.error("Sequelize sync failed:", err);
+      logger.error({ err }, "Sequelize sync failed");
     }
   });
 

@@ -9,6 +9,8 @@ import {
   getTeacherGuidesByUserAndGame
 } from "@/services/teacherGuide.service";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
+import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { NotFoundError } from "@/lib/errors/notFoundError";
 
@@ -75,7 +77,7 @@ describe("TeacherGuide service", () => {
         permission: "READ"
       });
     } catch (err) {
-      console.error("Setup failed:", err);
+      logger.error({ err }, "Setup failed");
     }
   });
 

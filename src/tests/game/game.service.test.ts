@@ -25,7 +25,7 @@ describe("Game service", () => {
       tracker = await createTracker(technology!.technology_id, "JSTracker");
       user = await createUser({username:"Alice", email:"alice@test.dev",role: "teacher"});
     } catch (err) {
-      console.error("Sequelize sync failed:", err);
+      logger.error({ err }, "Sequelize sync failed");
     }
   });
 

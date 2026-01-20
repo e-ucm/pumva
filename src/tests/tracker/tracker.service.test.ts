@@ -19,7 +19,7 @@ describe("Tracker service", () => {
       await db.Functions.runSqlFile(config.db.views_sql_file);
       technology = await createTechnology("Phaser");
     } catch (err) {
-      console.error("Sequelize sync failed:", err);
+      logger.error({ err }, "Sequelize sync failed");
     }
   });
 

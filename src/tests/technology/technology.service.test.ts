@@ -15,7 +15,7 @@ describe("Technology service", () => {
       await db.sequelize.sync({ force: true });
       await db.Functions.runSqlFile(config.db.views_sql_file);
     } catch (err) {
-      console.error("Sequelize sync failed:", err);
+      logger.error({ err }, "Sequelize sync failed");
     }
   });
 

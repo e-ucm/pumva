@@ -8,6 +8,7 @@ import {
   deleteGamePermissionById 
 } from "@/services/gamePermissions.service";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";
 import { NotFoundError } from "@/lib/errors/notFoundError";
 
@@ -64,7 +65,7 @@ describe("GamePermissions service", () => {
         external_url: "https://example.com/game"
       });
     } catch (err) {
-      console.error("Setup failed:", err);
+      logger.error({ err }, "Setup failed");
     }
   });
 

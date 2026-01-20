@@ -8,6 +8,7 @@ import {
   deleteLanguageById 
 } from "@/services/language.service";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";
 import { NotFoundError } from "@/lib/errors/notFoundError";
 
@@ -22,7 +23,7 @@ describe("Language service", () => {
       await db.sequelize.sync({ force: true });
       await db.Functions.runSqlFile(config.db.views_sql_file);
     } catch (err) {
-      console.error("Setup failed:", err);
+      logger.error({ err }, "Setup failed");
     }
   });
 

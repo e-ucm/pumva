@@ -8,6 +8,7 @@ import {
   deleteGameVersionById 
 } from "@/services/gameVersions.service";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";
 import { NotFoundError } from "@/lib/errors/notFoundError";
 
@@ -56,7 +57,7 @@ describe("GameVersions service", () => {
         external_url: "https://example.com/game-versions"
       });
     } catch (err) {
-      console.error("Setup failed:", err);
+      logger.error({ err }, "Setup failed");
     }
   });
 
