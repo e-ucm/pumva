@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import * as trackerService from "@/services/tracker.service";
+import * as gameVersionsService from "@/services/gameVersions.service";
 import { NotFoundError } from "@/lib/errors/notFoundError";
 
 /**
- * Retrieves all trackers from the database.
+ * Retrieves all game versions from the database.
  * 
  * @async
  * @param {Request} req - Express request object
@@ -13,130 +13,129 @@ import { NotFoundError } from "@/lib/errors/notFoundError";
  * @throws {Error} Passes errors to next middleware
  * 
  * @example
- * // GET /trackers
- * // Returns all trackers
+ * // GET /game-versions
+ * // Returns all game versions
  */
-export async function getTrackers(
+export async function getGameVersions(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const trackers = await trackerService.getTrackers();
-    res.json(trackers);
+    const gameVersions = await gameVersionsService.getGameVersions();
+    res.json(gameVersions);
   } catch (err) {
     next(err);
   }
 }
 
 /**
- * Retrieves a single tracker by ID.
+ * Retrieves a single game version by ID.
  * 
  * @async
- * @param {Request} req - Express request object containing tracker ID in URL params
+ * @param {Request} req - Express request object containing game version ID in URL params
  * @param {Response} res - Express response object
  * @param {NextFunction} next - Express next middleware function for error handling
  * @returns {Promise<void>}
  * @throws {Error} Passes errors to next middleware
  * 
  * @example
- * // GET /trackers/1
- * // Returns tracker with ID 1
+ * // GET /game-versions/1
+ * // Returns game version with ID 1
  */
-export async function getTrackerById(
+export async function getGameVersionById(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const tracker = await trackerService.getTrackerById(Number(req.params.id));
-    if (!tracker) {
-      throw new NotFoundError("Tracker not found");
+    const gameVersion = await gameVersionsService.getGameVersionById(Number(req.params.id));
+    if (!gameVersion) {
+      throw new NotFoundError("Game version not found");
     }
-    res.json(tracker);
+    res.json(gameVersion);
   } catch (err) {
     next(err);
   }
 }
 
 /**
- * Creates a new tracker in the database.
+ * Creates a new game version.
  * 
  * @async
- * @param {Request} req - Express request object containing tracker data in body
- * @param {Response} res - Express response object
- * @param {NextFunction} next - Express next middleware function for error handling
- * @returns {Promise<void>}
- * @throws {Error} Passes validation or database errors to next middleware
- * 
- * @example
- * // POST /trackers
- * // Body: { technology_id: 1, tracker: "New Tracker" }
- * // Returns: 201 Created with tracker object
- */
-export async function createTracker(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { technology_id, tracker } = req.body;
-    const newTracker = await trackerService.createTracker(technology_id, tracker);
-    res.status(201).json(newTracker);
-  } catch (err) {
-    next(err);
-  }
-}
-
-/**
- * Updates a tracker in the database by ID.
- * 
- * @async
- * @param {Request} req - Express request object containing tracker ID in URL params and update data in body
+ * @param {Request} req - Express request object containing game version data in body
  * @param {Response} res - Express response object
  * @param {NextFunction} next - Express next middleware function for error handling
  * @returns {Promise<void>}
  * @throws {Error} Passes errors to next middleware
  * 
  * @example
- * // PUT /trackers/1
- * // Body: { tracker: "Updated Tracker Name" }
- * // Returns: 200 OK with updated tracker object
+ * // POST /game-versions
+ * // Body: { game_id: 1, version: "1.0.0", executable: "game.exe" }
+ * // Returns: Created game version with 201 status
  */
-export async function updateTrackerById(
+export async function createGameVersion(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const tracker = await trackerService.updateTracker(Number(req.params.id), req.body);
-    res.json(tracker);
+    const gameVersion = await gameVersionsService.createGameVersion(req.body);
+    res.status(201).json(gameVersion);
   } catch (err) {
     next(err);
   }
 }
 
 /**
- * Deletes a tracker from the database by ID.
+ * Updates an existing game version by ID.
  * 
  * @async
- * @param {Request} req - Express request object containing tracker ID in URL params
+ * @param {Request} req - Express request object containing game version ID in URL params and update data in body
  * @param {Response} res - Express response object
  * @param {NextFunction} next - Express next middleware function for error handling
  * @returns {Promise<void>}
  * @throws {Error} Passes errors to next middleware
  * 
  * @example
- * // DELETE /trackers/1
+ * // PUT /game-versions/1
+ * // Body: { version: "1.0.1" }
+ * // Returns: Updated game version
+ */
+export async function updateGameVersionById(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const gameVersion = await gameVersionsService.updateGameVersionById(Number(req.params.id), req.body);
+    res.json(gameVersion);
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * Deletes a game version by ID.
+ * 
+ * @async
+ * @param {Request} req - Express request object containing game version ID in URL params
+ * @param {Response} res - Express response object
+ * @param {NextFunction} next - Express next middleware function for error handling
+ * @returns {Promise<void>}
+ * @throws {Error} Passes errors to next middleware
+ * 
+ * @example
+ * // DELETE /game-versions/1
  * // Returns: 204 No Content
  */
-export async function deleteTrackerById(
+export async function deleteGameVersionById(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    await trackerService.deleteTrackerById(Number(req.params.id));
+    await gameVersionsService.deleteGameVersionById(Number(req.params.id));
     res.status(204).send();
   } catch (err) {
     next(err);

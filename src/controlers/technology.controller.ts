@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as technologyService from "@/services/technology.service";
+import { NotFoundError } from "@/lib/errors/notFoundError";
 
 /**
  * Retrieves all technologies from the database.
@@ -50,7 +51,7 @@ export async function getTechnologyById(
   try {
     const technology = await technologyService.getTechnologyById(Number(req.params.id));
     if (!technology) {
-      return res.status(404).json({ message: "Technology not found" });
+      throw new NotFoundError("Technology not found");
     }
     res.json(technology);
   } catch (err) {

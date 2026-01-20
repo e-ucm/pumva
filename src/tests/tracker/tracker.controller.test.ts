@@ -10,6 +10,7 @@ import { logger } from "@/lib/logger";
 describe("Tracker Controller /trackers", () => {
   let testTrackerId: number;
   let testTechnologyId: number;
+  let testUserId: number;
 
   beforeAll(async () => {
     try {
@@ -21,6 +22,12 @@ describe("Tracker Controller /trackers", () => {
         technology: "Unity"
       });
       testTechnologyId = technology.technology_id;
+      const user = await db.Tables.User.create({
+        username: "gameowner",
+        email: "gameowner@test.com",
+        role: "teacher"
+      });
+      testUserId = user.user_id;
     } catch (err) {
       logger.error({ err }, "Sequelize sync failed");
     }
