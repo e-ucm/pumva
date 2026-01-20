@@ -141,3 +141,33 @@ export async function deleteGameById(
     next(err);
   }
 }
+
+/**
+ * Sets a specific version as the actual (current) version for a game.
+ * 
+ * @async
+ * @param {Request} req - Express request object containing game ID and version ID in URL params
+ * @param {Response} res - Express response object
+ * @param {NextFunction} next - Express next middleware function for error handling
+ * @returns {Promise<void>}
+ * @throws {Error} Passes errors to next middleware
+ * 
+ * @example
+ * // PUT /games/1/actual-version/5
+ * // Sets version with ID 5 as the actual version for game with ID 1
+ * // Returns: Updated game with new actual version
+ */
+export async function setGameVersionAsActual(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const gameId = Number(req.params.gameId);
+    const versionId = Number(req.params.versionId);
+    const updatedGame = await gameService.setGameVersionAsActual(gameId, versionId);
+    res.json(updatedGame);
+  } catch (err) {
+    next(err);
+  }
+}

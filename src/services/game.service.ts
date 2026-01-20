@@ -169,3 +169,42 @@ export async function deleteGameById(gameId: number): Promise<void> {
 export async function deleteGames(where: Partial<InstanceType<typeof db.Tables.Game>>): Promise<number> {
   return db.Tables.Game.destroy({ where });
 }
+
+/**
+ * Sets a specific game version as the actual (current) version for a game.
+ * 
+ * @async
+ * @function setGameVersionAsActual
+ * @param {number} gameId - The game identifier
+ * @param {number} versionId - The version identifier to set as actual
+ * @returns {Promise<Object>} The updated game record
+ * 
+ * @throws {NotFoundError} If game or version with given IDs do not exist
+ * 
+ * @example
+ * ```typescript
+ * const updatedGame = await setGameVersionAsActual(123, 456);
+ * ```
+ */
+export async function setGameVersionAsActual(gameId: number, versionId: number): Promise<InstanceType<typeof db.Tables.Game>> {
+  return db.sequelize.transaction(async (t) => {
+    // Check if game exists
+    const game = await db.Tables.Game.findByPk(gameId, { transaction: t });
+    if (!game) {
+      throw new NotFoundError("Game not found");
+    }
+
+    // Check if version exists and belongs to the game
+    const gameVersion = await db.Tables.GamesVersions.findOne({
+      where: { version_id: versionId, game_id: gameId },
+      transaction: t
+    });
+    if (!gameVersion) {
+      throw new NotFoundError("Game version not found or does not belong to this game");
+    }
+
+    // Update the game's actual field to the version ID
+    await game.update({ actual: versionId }, { transaction: t });
+    return game;
+  });
+}

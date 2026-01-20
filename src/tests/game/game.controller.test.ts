@@ -147,6 +147,42 @@ describe("Game Controller /games", () => {
     expect(data.public).toBe(false);
   });
 
+  it("PUT /games/:gameId/actual-version/:versionId sets version as actual", async () => {
+    // First create a game version
+    const gameVersion = await db.Tables.GamesVersions.create({
+      game_id: testGameId,
+      version: "1.0.0",
+      external_url: "https://example.com/test-game-v1.0.0"
+    });
+
+    // Set this version as actual
+    const response = await request(app)
+      .put(`/games/${testGameId}/actual-version/${gameVersion.version_id}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    
+    const data: InstanceType<typeof db.Tables.Game> = response.body;
+    expect(data.game_id).toBe(testGameId);
+    expect(data.actual).toBe(gameVersion.version_id);
+  });
+
+  it("PUT /games/:gameId/actual-version/:versionId returns 404 for non-existent game", async () => {
+    const response = await request(app)
+      .put('/games/99999/actual-version/1');
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('Game not found');
+  });
+
+  it("PUT /games/:gameId/actual-version/:versionId returns 404 for non-existent version", async () => {
+    const response = await request(app)
+      .put(`/games/${testGameId}/actual-version/99999`);
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('Game version not found or does not belong to this game');
+  });
+
   it("DELETE /games/:id deletes game by id", async () => {
     const response = await request(app)
       .delete(`/games/${testGameId}`);

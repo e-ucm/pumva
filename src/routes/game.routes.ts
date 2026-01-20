@@ -10,6 +10,7 @@ import * as gameController from "@/controlers/game.controller";
  * - GET /games/:id - Get game by ID  
  * - POST /games - Create new game
  * - PUT /games/:id - Update game by ID
+ * - PUT /games/:gameId/actual-version/:versionId - Set version as actual
  * - DELETE /games/:id - Delete game by ID
  * 
  * @type {Router}
@@ -33,6 +34,9 @@ router.post("/", gameController.createGame);
 
 // PUT /games/:id - Update game by ID
 router.put("/:id", gameController.updateGameById);
+
+// PUT /games/:gameId/actual-version/:versionId - Set version as actual
+router.put("/:gameId/actual-version/:versionId", gameController.setGameVersionAsActual);
 
 // DELETE /games/:id - Delete game by ID
 router.delete("/:id", gameController.deleteGameById);

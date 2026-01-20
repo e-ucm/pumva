@@ -7,6 +7,7 @@ import {
   deleteGameVersions, 
   deleteGameVersionById 
 } from "@/services/gameVersions.service";
+import { setGameVersionAsActual } from "@/services/game.service";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";
@@ -158,6 +159,61 @@ describe("GameVersions service", () => {
     expect.assertions(1);
     await expect(
       deleteGameVersionById(9999)
+    ).rejects.toThrow(NotFoundError);
+  });
+
+  it("sets a game version as actual", async () => {
+    // Create a new version to set as actual
+    const actualVersion = await createGameVersion({
+      game_id: testGame!.game_id,
+      version: "1.5.0",
+      external_url: "https://example.com/game-v1.5.0"
+    });
+
+    // Set this version as actual
+    const updatedGame = await setGameVersionAsActual(testGame!.game_id, actualVersion.version_id);
+    
+    expect(updatedGame).toBeDefined();
+    expect(updatedGame.actual).toBe(actualVersion.version_id);
+    expect(updatedGame.game_id).toBe(testGame!.game_id);
+  });
+
+  it("set game version as actual should throw when game not found", async () => {
+    expect.assertions(1);
+    await expect(
+      setGameVersionAsActual(9999, gameVersion!.version_id)
+    ).rejects.toThrow(NotFoundError);
+  });
+
+  it("set game version as actual should throw when version not found", async () => {
+    expect.assertions(1);
+    await expect(
+      setGameVersionAsActual(testGame!.game_id, 9999)
+    ).rejects.toThrow(NotFoundError);
+  });
+
+  it("set game version as actual should throw when version doesn't belong to game", async () => {
+    // Create another game and version
+    const anotherGame = await db.Tables.Game.create({
+      name: "Another Test Game",
+      owner_id: testUser!.user_id,
+      public: true,
+      description: "Another test game",
+      type: "WEB",
+      technology_id: testTechnology!.technology_id,
+      tracker_id: testTracker!.tracker_id,
+      external_url: "https://example.com/another-game"
+    });
+
+    const anotherVersion = await createGameVersion({
+      game_id: anotherGame.game_id,
+      version: "2.0.0",
+      external_url: "https://example.com/another-game-v2.0.0"
+    });
+
+    expect.assertions(1);
+    await expect(
+      setGameVersionAsActual(testGame!.game_id, anotherVersion.version_id)
     ).rejects.toThrow(NotFoundError);
   });
 });
