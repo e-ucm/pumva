@@ -1,6 +1,7 @@
 import { app } from "./app.js";
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
+import { logger } from "@/lib/logger";
 
 const PORT = config.api.port;
 
@@ -16,7 +17,7 @@ const PORT = config.api.port;
  * ```typescript
  * // Automatically called when this module is executed
  * start().catch(err => {
- *   console.error("Failed to start server", err);
+ *   logger.error({ err }, "Failed to start server");
  *   process.exit(1);
  * });
  * ```
@@ -30,6 +31,6 @@ async function start() {
 }
 
 start().catch(err => {
-  console.error("Failed to start server", err);
+  logger.error("Failed to start server", err);
   process.exit(1);
 });
