@@ -88,12 +88,13 @@ describe("User Controller /users", () => {
     expect(data.email).toBe("test@example.com");
   });
 
-  it("GET /users?username=X returns null for non-existent username", async () => {
+  it("GET /users?username=X returns 404 for non-existent username", async () => {
     const response = await request(app)
       .get('/users')
       .query({ username: "nonexistent" });
 
-    expect(response.body).toBeNull();
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("User not found");
   });
 
   it("DELETE /users/:id deletes user by id", async () => {

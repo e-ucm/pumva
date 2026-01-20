@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "@/services/user.service";
+import { NotFoundError } from "@/lib/errors/notFoundError";
 
 /**
  * Retrieves users from the database.
@@ -29,6 +30,9 @@ export async function getUsers(
   try {
     if(req.query.username) {
       const user = await userService.getUserByUsername(String(req.query.username));
+      if (!user) {
+        throw new NotFoundError("User not found");
+      }
       return res.json(user);
     } else {
       const users = await userService.getUsers();
