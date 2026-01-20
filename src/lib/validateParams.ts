@@ -70,25 +70,33 @@ export function validateParams(schema: Schema, params: Params): void {
         switch (rules.type) {
         case "string":
             if (typeof value !== "string") {
-            throw new Error(`${key} must be a string`);
+                if(!rules.default) {
+                    throw new Error(`${key} must be a string`);
+                }
             }
             break;
 
         case "number":
             if (typeof value !== "number" || Number.isNaN(value)) {
-            throw new Error(`${key} must be a number`);
+                if(!rules.default) {
+                    throw new Error(`${key} must be a number`);
+                }
             }
             break;
 
         case "boolean":
             if (typeof value !== "boolean") {
-            throw new Error(`${key} must be a boolean`);
+                if(!rules.default) {
+                    throw new Error(`${key} must be a boolean`);
+                }
             }
             break;
 
         case "array":
             if (!Array.isArray(value)) {
-            throw new Error(`${key} must be an array`);
+                if(!rules.default) {
+                    throw new Error(`${key} must be an array`);
+                }
             }
             if (rules.of) {
             for (const v of value) {

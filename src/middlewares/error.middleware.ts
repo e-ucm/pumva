@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import { logger } from "@/lib/logger";
+import { NotFoundError } from "@/lib/errors/notFoundError";
 
 /**
  * Express error handling middleware.
@@ -23,9 +25,9 @@ export function errorMiddleware(
   res: Response,
   _next: NextFunction
 ) {
-  console.error(err);
+  logger.error(err);
 
-  if (err.message === "User not found") {
+  if (err instanceof NotFoundError) {
     return res.status(404).json({ message: err.message });
   }
 

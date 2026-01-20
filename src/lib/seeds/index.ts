@@ -11,7 +11,7 @@ import { logger } from "@/lib/logger";
  * // Run from command line: npm run seed
  */
 seedFakeData().then(() => {
-  logger.info("Seeding completed.");
+  logger.debug("Seeding completed.");
   process.exit(0);
 }).catch((error : Error) => {
   logger.error("Error during seeding:");
