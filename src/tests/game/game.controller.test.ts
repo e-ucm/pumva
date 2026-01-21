@@ -3,6 +3,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import * as gameService from "@/services/game.service";
 
 /**
  * HTTP API tests for game controller endpoints.
@@ -197,5 +198,77 @@ describe("Game Controller /games", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Game not found');
+  });
+
+  it("GET /games handles service errors", async () => {
+    const mockError = new Error('Database connection failed');
+    jest.spyOn(gameService, 'getGames').mockRejectedValueOnce(mockError);
+
+    const response = await request(app).get('/games');
+
+    expect(response.status).toBe(500);
+    
+    // Restore the mock
+    jest.restoreAllMocks();
+  });
+
+  it("POST /games handles service errors", async () => {
+    const mockError = new Error('Validation failed');
+    jest.spyOn(gameService, 'createGame').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .post('/games')
+      .send({
+        name: "Test Game",
+        description: "A test game",
+        public: true,
+        type: "WEB",
+        technology_id: testTechnologyId,
+        owner_id: testOwnerId,
+        tracker_id: testTrackerId
+      });
+
+    expect(response.status).toBe(500);
+    
+    // Restore the mock
+    jest.restoreAllMocks();
+  });
+
+  it("PUT /games/:id handles service errors", async () => {
+    const mockError = new Error('Update failed');
+    jest.spyOn(gameService, 'updateGame').mockRejectedValueOnce(mockError);
+
+    // Create a test game first
+    const game = await db.Tables.Game.create({
+      name: "Test Game for Error",
+      description: "A test game",
+      public: true,
+      type: "WEB",
+      technology_id: testTechnologyId,
+      owner_id: testOwnerId,
+      tracker_id: testTrackerId
+    });
+
+    const response = await request(app)
+      .put(`/games/${game.game_id}`)
+      .send({ name: "Updated Name" });
+
+    expect(response.status).toBe(500);
+    
+    // Restore the mock
+    jest.restoreAllMocks();
+  });
+
+  it("PUT /games/:gameId/actual-version/:versionId handles service errors", async () => {
+    const mockError = new Error('Service failed');
+    jest.spyOn(gameService, 'setGameVersionAsActual').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .put('/games/1/actual-version/1');
+
+    expect(response.status).toBe(500);
+    
+    // Restore the mock
+    jest.restoreAllMocks();
   });
 });

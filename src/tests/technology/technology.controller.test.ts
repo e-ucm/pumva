@@ -3,6 +3,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import * as technologyService from "@/services/technology.service";
 
 /**
  * HTTP API tests for technology controller endpoints.
@@ -118,5 +119,42 @@ describe("Technology Controller /technologies", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Technology not found');
+  });
+
+  it("GET /technologies handles service errors", async () => {
+    const mockError = new Error('Database connection failed');
+    jest.spyOn(technologyService, 'getTechnologies').mockRejectedValueOnce(mockError);
+
+    const response = await request(app).get('/technologies');
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("POST /technologies handles service errors", async () => {
+    const mockError = new Error('Creation failed');
+    jest.spyOn(technologyService, 'createTechnology').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .post('/technologies')
+      .send({ technology: "Test Tech" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("PUT /technologies/:id handles service errors", async () => {
+    const mockError = new Error('Update failed');
+    jest.spyOn(technologyService, 'updateTechnology').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .put('/technologies/1')
+      .send({ technology: "Updated Tech" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
   });
 });

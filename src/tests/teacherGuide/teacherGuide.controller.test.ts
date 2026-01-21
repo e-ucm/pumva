@@ -3,6 +3,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import * as teacherGuideService from "@/services/teacherGuide.service";
 
 /**
  * HTTP API tests for teacher guide controller endpoints.
@@ -157,4 +158,39 @@ describe("TeacherGuide Controller /teacher-guides", () => {
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Teacher guide not found');
   });
-});
+  it("GET /teacher-guides handles service errors", async () => {
+    const mockError = new Error('Database connection failed');
+    jest.spyOn(teacherGuideService, 'getTeacherGuides').mockRejectedValueOnce(mockError);
+
+    const response = await request(app).get('/teacher-guides');
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("POST /teacher-guides handles service errors", async () => {
+    const mockError = new Error('Creation failed');
+    jest.spyOn(teacherGuideService, 'createTeacherGuide').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .post('/teacher-guides')
+      .send({ game_id: testGameId, language_id: testLanguageId, url: "https://example.com/guide" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("PUT /teacher-guides/:gameId/:languageId handles service errors", async () => {
+    const mockError = new Error('Update failed');
+    jest.spyOn(teacherGuideService, 'updateTeacherGuideById').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .put(`/teacher-guides/${testGameId}/${testLanguageId}`)
+      .send({ url: "https://updated.com/guide" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });});

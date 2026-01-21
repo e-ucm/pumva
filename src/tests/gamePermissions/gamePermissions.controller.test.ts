@@ -3,6 +3,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import * as gamePermissionsService from "@/services/gamePermissions.service";
 
 /**
  * HTTP API tests for game permissions controller endpoints.
@@ -142,4 +143,39 @@ describe("GamePermissions Controller /game-permissions", () => {
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Game permission not found');
   });
-});
+  it("GET /game-permissions handles service errors", async () => {
+    const mockError = new Error('Database connection failed');
+    jest.spyOn(gamePermissionsService, 'getGamePermissions').mockRejectedValueOnce(mockError);
+
+    const response = await request(app).get('/game-permissions');
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("POST /game-permissions handles service errors", async () => {
+    const mockError = new Error('Creation failed');
+    jest.spyOn(gamePermissionsService, 'createGamePermission').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .post('/game-permissions')
+      .send({ game_id: testGameId, user_id: testUserId, permissions: "read" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("PUT /game-permissions/:userId/:gameId handles service errors", async () => {
+    const mockError = new Error('Update failed');
+    jest.spyOn(gamePermissionsService, 'updateGamePermissionById').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .put(`/game-permissions/${testUserId}/${testGameId}`)
+      .send({ permissions: "write" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });});

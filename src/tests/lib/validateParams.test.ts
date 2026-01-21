@@ -332,5 +332,16 @@ describe("validateParams", () => {
 
       expect(() => validateParams(schema, params)).not.toThrow();
     });
+
+    it("should throw error for unknown type", () => {
+      const schema = {
+        test: { type: "unknown" as any }
+      };
+      const params = { test: "value" };
+
+      expect(() => validateParams(schema, params)).toThrow(
+        "Unknown type: unknown"
+      );
+    });
   });
 });

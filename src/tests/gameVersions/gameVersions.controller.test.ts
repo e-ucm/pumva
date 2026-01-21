@@ -3,6 +3,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import * as gameVersionsService from "@/services/gameVersions.service";
 
 /**
  * HTTP API tests for game versions controller endpoints.
@@ -162,5 +163,46 @@ describe("GameVersions Controller /game-versions", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Game version not found');
+  });
+
+  it("GET /game-versions handles service errors", async () => {
+    const mockError = new Error('Database connection failed');
+    jest.spyOn(gameVersionsService, 'getGameVersions').mockRejectedValueOnce(mockError);
+
+    const response = await request(app).get('/game-versions');
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("POST /game-versions handles service errors", async () => {
+    const mockError = new Error('Creation failed');
+    jest.spyOn(gameVersionsService, 'createGameVersion').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .post('/game-versions')
+      .send({
+        game_id: testGameId,
+        version: "1.0.0",
+        external_url: "https://example.com/test"
+      });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("PUT /game-versions/:id handles service errors", async () => {
+    const mockError = new Error('Update failed');
+    jest.spyOn(gameVersionsService, 'updateGameVersionById').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .put('/game-versions/1')
+      .send({ version: "2.0.0" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
   });
 });

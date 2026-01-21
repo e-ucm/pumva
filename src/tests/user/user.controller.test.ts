@@ -3,6 +3,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import * as userService from "@/services/user.service";
 
 /**
  * HTTP API tests for user controller endpoints.
@@ -111,5 +112,16 @@ describe("User Controller /users", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('User not found');
+  });
+
+  it("GET /users handles service errors", async () => {
+    const mockError = new Error('Database connection failed');
+    jest.spyOn(userService, 'getUsers').mockRejectedValueOnce(mockError);
+
+    const response = await request(app).get('/users');
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
   });
 });

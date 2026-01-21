@@ -3,6 +3,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import * as languageService from "@/services/language.service";
 
 /**
  * HTTP API tests for language controller endpoints.
@@ -118,5 +119,42 @@ describe("Language Controller /languages", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Language not found');
+  });
+
+  it("GET /languages handles service errors", async () => {
+    const mockError = new Error('Database connection failed');
+    jest.spyOn(languageService, 'getLanguages').mockRejectedValueOnce(mockError);
+
+    const response = await request(app).get('/languages');
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("POST /languages handles service errors", async () => {
+    const mockError = new Error('Creation failed');
+    jest.spyOn(languageService, 'createLanguage').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .post('/languages')
+      .send({ language: "Test Language" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("PUT /languages/:id handles service errors", async () => {
+    const mockError = new Error('Update failed');
+    jest.spyOn(languageService, 'updateLanguageById').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .put('/languages/1')
+      .send({ language: "Updated Language" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
   });
 });

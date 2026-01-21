@@ -3,6 +3,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
+import * as trackerService from "@/services/tracker.service";
 
 /**
  * HTTP API tests for tracker controller endpoints.
@@ -136,5 +137,42 @@ describe("Tracker Controller /trackers", () => {
 
     expect(response.status).toBe(404);
     expect(response.body.message).toBe('Tracker not found');
+  });
+
+  it("GET /trackers handles service errors", async () => {
+    const mockError = new Error('Database connection failed');
+    jest.spyOn(trackerService, 'getTrackers').mockRejectedValueOnce(mockError);
+
+    const response = await request(app).get('/trackers');
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("POST /trackers handles service errors", async () => {
+    const mockError = new Error('Creation failed');
+    jest.spyOn(trackerService, 'createTracker').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .post('/trackers')
+      .send({ tracker: "Test Tracker", technology_id: testTechnologyId });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
+
+  it("PUT /trackers/:id handles service errors", async () => {
+    const mockError = new Error('Update failed');
+    jest.spyOn(trackerService, 'updateTracker').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .put('/trackers/1')
+      .send({ tracker: "Updated Tracker" });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
   });
 });
