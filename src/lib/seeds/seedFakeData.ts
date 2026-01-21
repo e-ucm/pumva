@@ -134,7 +134,7 @@ export async function seedGames(count = 100, role = "teacher") {
         description: faker.commerce.productDescription(),
         owner_id: faker.helpers.arrayElement(owners).user_id,
         type : faker.helpers.arrayElement(type),
-        technology_id: tech_id || null,
+        technology_id: tech_id,
         tracker_id: gameTrackers[tech_id] || null,
       });
     }

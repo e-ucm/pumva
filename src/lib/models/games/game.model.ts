@@ -100,7 +100,7 @@ export function GameFactory(
     },
     tracker_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     createdAt:{
       type: DataTypes.DATE,
