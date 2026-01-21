@@ -1,4 +1,5 @@
 import express from "express";
+import { auth } from "@/middlewares/auth.middleware";
 import userRoutes from "@/routes/user.routes";
 import trackerRoutes from "@/routes/tracker.routes";
 import technologyRoutes from "@/routes/technology.routes";
@@ -13,6 +14,7 @@ import teacherGuideRoutes from "@/routes/teacherGuide.routes";
  *
  * Middleware:
  * - express.json(): Parse incoming JSON requests
+ * - auth: JWT authentication and role-based authorization
  * - errorMiddleware: Global error handling
  *
  * Routes:
@@ -40,6 +42,14 @@ export const app = express();
 
 app.use(express.json());
 
+// Health check endpoint (no authentication required)
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
+// Apply authentication middleware to all routes except health
+app.use(auth);
+
 app.use("/users", userRoutes);
 app.use("/trackers", trackerRoutes);
 app.use("/technologies", technologyRoutes);
@@ -48,10 +58,6 @@ app.use("/game-permissions", gamePermissionsRoutes);
 app.use("/game-versions", gameVersionsRoutes);
 app.use("/languages", languageRoutes);
 app.use("/teacher-guides", teacherGuideRoutes);
-
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
 
 import { errorMiddleware } from "@/middlewares/error.middleware";
 

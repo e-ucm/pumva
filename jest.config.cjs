@@ -1,22 +1,23 @@
 module.exports = {
   
-  //preset: "ts-jest",
   preset: 'ts-jest/presets/default-esm', // for TS + ESM
 
   testEnvironment: "node",
   
   //maxWorkers: 1, // Run tests serially, not in parallel
-  maxWorkers: '50%',
+  maxWorkers: '100%',
   
-  globals: {
-    "ts-jest": {
-      tsconfig: "tsconfig.jest.json",  // <- point to your test tsconfig
+  // Updated ts-jest configuration (new syntax)
+  transform: {
+    '^.+\\.ts$': ['ts-jest', {
+      tsconfig: 'tsconfig.jest.json',
       useESM: true
-    }
+    }]
   },
 
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1"
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "keycloak-public-key": "<rootDir>/src/tests/__mocks__/keycloak-public-key.js"
   },
 
   testMatch: ["**/tests/**/*.test.ts"], // optional, matches your test files
@@ -37,5 +38,11 @@ module.exports = {
 
   coverageReporters: ["text", "html", "lcov"],
 
-  runInBand: true   // ⬅ REQUIRED to avoid segfaults
+  // Handle ESM modules that Jest has trouble with
+  extensionsToTreatAsEsm: ['.ts'],
+  
+  // Transform node_modules that use ESM
+  transformIgnorePatterns: [
+    'node_modules/(?!(yaml|jsonwebtoken|keycloak-public-key)/)'
+  ]
 };

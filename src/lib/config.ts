@@ -16,6 +16,7 @@ import path from 'path';
  * @property {Object} api - API configuration
  * @property {Object} logger - Logger configuration
  * @property {Object} shlink - Shlink service configuration
+ * @property {Object} auth - Authentication configuration
  * 
  * @example
  * ```typescript
@@ -25,7 +26,7 @@ import path from 'path';
  * const dbPath = config.db.complete_path;
  * ```
  */
-let config: any = {}
+let config: any = {};
 
 let ignored_ports = [80, 8080, 443];
 
@@ -33,7 +34,7 @@ config.external_url = process.env.PUMVA_HOST || 'https://simva.external.test'
 config.favicon_file = process.env.PUMVA_FAVICON || '/favicon.ico'
 config.favicon_url = config.external_url + config.favicon_file
 config.debug = process.env.DEBUG
-config.appFolder = process.env.APP_FOLDER || '/home/node/app'
+config.appFolder = process.env.APP_FOLDER ||  process.cwd()
 
 config.db = {}
 config.db.path = process.env.SQLLITE_DB_PATH || '/data/db'
@@ -64,5 +65,17 @@ config.shlink.protocol = process.env.SHLINK_PROTOCOL || 'https'
 config.shlink.port = process.env.SHLINK_PORT || '443'
 config.shlink.apiurl =  `${config.shlink.protocol}://${config.shlink.apihost}:${config.shlink.port}`
 config.shlink.apikey = process.env.SHLINK_SERVER_API_KEY || 'myapikey'
+
+config.auth = {}
+config.auth.jwt_secret = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+config.auth.jwt_expires_in = process.env.JWT_EXPIRES_IN || '24h'
+config.auth.url = process.env.KEYCLOAK_URL || 'http://localhost:8080'
+config.auth.realm = process.env.KEYCLOAK_REALM || 'simva'
+config.auth.client_id = process.env.KEYCLOAK_CLIENT_ID || 'pumva'
+config.auth.client_secret = process.env.KEYCLOAK_CLIENT_SECRET || 'secret'
+config.auth.teacher_username = process.env.TEACHER_USERNAME || 'teacher'
+config.auth.teacher_password = process.env.TEACHER_PASSWORD || 'teacher'
+config.auth.admin_username = process.env.ADMIN_USERNAME || 'admin1'
+config.auth.admin_password = process.env.ADMIN_PASSWORD || 'adminpass'
 
 export { config };
