@@ -50,13 +50,8 @@ describe("TeacherGuide Controller /teacher-guides", () => {
 
   beforeAll(async () => {
     try {
-      // Fix config paths for test environment
-      //const originalAppFolder = config.appFolder;
-      //config.appFolder = process.cwd();
-      //config.db.sql_files_path = config.appFolder + "/" + config.db.sql_files_subpath;
-      //config.db.views_sql_file = config.db.sql_files_path + "/" + config.db.views_sql_filename;
-      
       await db.sequelize.sync({ force: true });
+      await db.Functions.runSqlFile(config.db.views_sql_file);
       
 
       // Create dependencies
