@@ -35,6 +35,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Users_table_databases
       summary: Get all users or filter by username
       description: Retrieve all users from the system or filter by username query parameter
       parameters:
@@ -60,6 +61,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Users_table_databases
       summary: Create a new user
       description: Create a new user in the system
       requestBody:
@@ -85,6 +87,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Users_table_databases
       summary: Delete a user
       description: Delete a user by their ID
       parameters:
@@ -109,6 +112,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Games_table_databases
       summary: Get all games
       description: Retrieve all games in the system
       responses:
@@ -151,6 +155,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Games_table_databases
       summary: Get game by ID
       description: Retrieve a specific game by its ID
       parameters:
@@ -176,6 +181,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Games_table_databases
       summary: Update a game
       description: Update an existing game by its ID
       parameters:
@@ -209,6 +215,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Games_table_databases
       summary: Delete a game
       description: Delete a game by its ID
       parameters:
@@ -267,6 +274,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Game_Version_table_databases
       summary: Get all game versions
       description: Retrieve all game versions in the system
       responses:
@@ -309,6 +317,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Game_Version_table_databases
       summary: Get game version by ID
       description: Retrieve a specific game version by its ID
       parameters:
@@ -385,12 +394,13 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  # Game Permissions endpoints
+  # Game_Permissions endpoints
   /game-permissions:
     get:
       tags:
         - Admins
         - Teachers
+        - Game_Permissions_table_databases
       summary: Get all game permissions
       description: Retrieve all game permissions in the system
       responses:
@@ -433,6 +443,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Game_Permissions_table_databases
       summary: Get game permission by user and game
       description: Retrieve a specific game permission by user ID and game ID
       parameters:
@@ -536,6 +547,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Technologies_table_databases
       summary: Get all technologies
       description: Retrieve all technologies in the system
       responses:
@@ -578,6 +590,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Technologies_table_databases
       summary: Get technology by ID
       description: Retrieve a specific technology by its ID
       parameters:
@@ -660,6 +673,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Trackers_table_databases
       summary: Get all trackers
       description: Retrieve all trackers in the system
       responses:
@@ -702,6 +716,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Trackers_table_databases
       summary: Get tracker by ID
       description: Retrieve a specific tracker by its ID
       parameters:
@@ -784,6 +799,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Languages_table_databases
       summary: Get all languages
       description: Retrieve all languages in the system
       responses:
@@ -826,6 +842,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Languages_table_databases
       summary: Get language by ID
       description: Retrieve a specific language by its ID
       parameters:
@@ -908,6 +925,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Teacher_Guides_table_databases
       summary: Get all teacher guides
       description: Retrieve all teacher guides in the system
       responses:
@@ -950,6 +968,7 @@ paths:
       tags:
         - Admins
         - Teachers
+        - Teacher_Guides_table_databases
       summary: Get teacher guide by game and language
       description: Retrieve a specific teacher guide by game ID and language ID
       parameters:
@@ -1087,7 +1106,7 @@ paths:
   /health:
     get:
       tags:
-        - Health
+        - Healths
       summary: Health check
       description: Check if the API is running and healthy
       responses:
@@ -1107,6 +1126,130 @@ paths:
                   version:
                     type: string
                     example: "1.0.0"
+
+  # Views endpoints - Database view queries for complex data aggregations
+  /views/games/user/{user_id}:
+    get:
+      tags:
+        - Admins
+        - Teachers
+        - Views_databases
+        - Games_databases
+      summary: Get games for a specific user
+      description: Retrieve games with user permissions using the v_complete_game_permissions view
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User ID to get games for
+          schema:
+            type: integer
+            example: 123
+      responses:
+        '200':
+          description: List of games with user permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompleteGamePermission'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /views/games/public:
+    get:
+      tags:
+        - Admins
+        - Teachers
+        - Views_databases
+        - Games_databases
+      summary: Get all public games
+      description: Retrieve all public games using the v_public_games_permissions view
+      responses:
+        '200':
+          description: List of public games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompleteGamePermission'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /views/guides/user/{user_id}/game/{game_id}:
+    get:
+      tags:
+        - Admins
+        - Teachers
+        - Views_databases
+        - Teacher Guides_databases
+      summary: Get teacher guides for a user and game
+      description: Retrieve teacher guides with permissions using the v_game_guide_url_permissions view
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: integer
+            example: 123
+        - name: game_id
+          in: path
+          required: true
+          description: Game ID
+          schema:
+            type: integer
+            example: 456
+      responses:
+        '200':
+          description: List of teacher guides with permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompleteGameGuidePermission'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /views/users/username/{username}:
+    get:
+      tags:
+        - Admins
+        - Teachers
+        - Views_databases
+        - Users_databases
+      summary: Get user by username
+      description: Retrieve user information by username using database view
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: Username to search for
+          schema:
+            type: string
+            example: "john_doe"
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   schemas:
@@ -1489,6 +1632,127 @@ components:
           format: date-time
           description: When the error occurred
 
+    CompleteGamePermission:
+      type: object
+      description: Complete game permission record with aggregated data from games, permissions, users, technologies, and trackers
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user with permission
+          example: 123
+        username:
+          type: string
+          description: Username of the user
+          example: "john_doe"
+        role:
+          type: string
+          description: Role of the user
+          example: "TEACHER"
+        email:
+          type: string
+          description: Email of the user
+          example: "john@example.com"
+        permission:
+          type: string
+          description: Permission type
+          enum: ["READ", "WRITE"]
+          example: "READ"
+        game_id:
+          type: integer
+          description: ID of the game
+          example: 456
+        name:
+          type: string
+          description: Name of the game
+          example: "Educational Game"
+        public:
+          type: boolean
+          description: Whether the game is public
+          example: true
+        description:
+          type: string
+          description: Game description
+          example: "An educational game for learning math"
+        owner_id:
+          type: integer
+          description: ID of the game owner
+          example: 789
+        type:
+          type: string
+          description: Game type
+          enum: ["WEB", "DESKTOP"]
+          example: "WEB"
+        actual_version_id:
+          type: integer
+          description: ID of the current version
+          example: 1
+        actual_version_url:
+          type: string
+          description: URL of the current version
+          example: "https://game.example.com/v1"
+        technology_name:
+          type: string
+          description: Name of the technology used
+          example: "Unity"
+        tracker_name:
+          type: string
+          description: Name of the tracker used
+          example: "Analytics Tracker"
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Record update timestamp
+
+    CompleteGameGuidePermission:
+      type: object
+      description: Complete game guide permission record with aggregated data from games, guides, languages, and permissions
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user with permission
+          example: 123
+        username:
+          type: string
+          description: Username of the user
+          example: "john_doe"
+        role:
+          type: string
+          description: Role of the user
+          example: "TEACHER"
+        email:
+          type: string
+          description: Email of the user
+          example: "john@example.com"
+        permission:
+          type: string
+          description: Permission type
+          enum: ["READ", "WRITE"]
+          example: "READ"
+        game_id:
+          type: integer
+          description: ID of the game
+          example: 456
+        language:
+          type: string
+          description: Language of the teacher guide
+          example: "en"
+        teacher_guide_url:
+          type: string
+          description: URL of the teacher guide
+          example: "https://guides.example.com/game456/en"
+        createdAt:
+          type: string
+          format: date-time
+          description: Record creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Record update timestamp
+
   responses:
     NotFound:
       description: Resource not found
@@ -1525,5 +1789,23 @@ tags:
     description: Administrative operations (admin access only)
   - name: Teachers
     description: Teacher operations (teacher access)
-  - name: Health
+  - name: Healths
     description: Health check operations (no authentication required)
+  - name: Views_databases
+    description: Database view operations for complex data aggregations (read-only)
+  - name: Games_table_databases
+    description: Game table management operations
+  - name: Users_table_databases
+    description: User table management operations
+  - name: Teacher_Guides_table_databases
+    description: Teacher guide table management operations
+  - name: Game_Version_table_databases
+    description: Game version table management operations
+  - name: Game_Permissions_table_databases
+    description: Game permission table management operations
+  - name: Technologies_table_databases
+    description: Technology table management operations
+  - name: Trackers_table_databases
+    description: Tracker table management operations
+  - name: Languages_table_databases
+    description: Language table management operations
