@@ -193,4 +193,16 @@ describe("TeacherGuide Controller /teacher-guides", () => {
     expect(response.status).toBe(500);
     
     jest.restoreAllMocks();
+  });
+
+  it("GET /teacher-guides/complete-permissions-view/:gameId/:languageId handles service errors", async () => {
+    const mockError = new Error('Service failed');
+    jest.spyOn(teacherGuideService, 'getTeacherGuidesByUserAndGame').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .get(`/teacher-guides/complete-permissions-view/${testGameId}/${testLanguageId}`);
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
   });});

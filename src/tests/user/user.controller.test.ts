@@ -124,4 +124,21 @@ describe("User Controller /users", () => {
     
     jest.restoreAllMocks();
   });
+
+  it("POST /users handles service errors", async () => {
+    const mockError = new Error('Creation failed');
+    jest.spyOn(userService, 'createUser').mockRejectedValueOnce(mockError);
+
+    const response = await request(app)
+      .post('/users')
+      .send({
+        username: "testuser",
+        email: "test@example.com",
+        role: "student"
+      });
+
+    expect(response.status).toBe(500);
+    
+    jest.restoreAllMocks();
+  });
 });
