@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as teacherGuideService from "@/services/teacherGuide.service";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { getTeacherGuidesByUserAndGame } from "@/services/views.service";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Retrieves all teacher guides from the database.
@@ -170,7 +171,7 @@ export async function getCompleteGameGuidePermissionsView(
   try {
     const gameId = Number(req.params.gameId);
     const languageId = Number(req.params.languageId);
-    const permissions = await teacherGuideService.getTeacherGuidesByUserAndGame(languageId, gameId);
+    const permissions = await getTeacherGuidesByUserAndGame(languageId, gameId);
     res.json(permissions);
   } catch (err) {
     next(err);

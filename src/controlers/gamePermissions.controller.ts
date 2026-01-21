@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as gamePermissionsService from "@/services/gamePermissions.service";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Retrieves all game permissions from the database.

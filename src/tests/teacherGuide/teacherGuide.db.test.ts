@@ -17,7 +17,7 @@ describe("TeacherGuide DB", () => {
   beforeAll(async () => {
     try {
       await db.sequelize.sync({ force: true });
-      await db.Functions.runSqlFile(config.db.views_sql_file);
+      
 
       // Create dependencies
       testUser = await db.Tables.User.create({

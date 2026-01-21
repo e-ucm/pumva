@@ -1,18 +1,17 @@
-import { 
-  createTeacherGuide, 
-  getTeacherGuides, 
-  getTeacherGuideById, 
-  updateTeacherGuides, 
-  updateTeacherGuideById, 
-  deleteTeacherGuides, 
-  deleteTeacherGuideById,
-  getTeacherGuidesByUserAndGame
+import {
+  createTeacherGuide,
+  getTeacherGuides,
+  getTeacherGuideById,
+  updateTeacherGuides,
+  updateTeacherGuideById,
+  deleteTeacherGuides,
+  deleteTeacherGuideById
 } from "@/services/teacherGuide.service";
+import { getTeacherGuidesByUserAndGame } from "@/services/views.service";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
-import { db } from "@/lib/db";
 import { config } from "@/lib/config";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Integration tests for teacherGuide service CRUD operations and error handling.

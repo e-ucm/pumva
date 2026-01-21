@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as gameVersionsService from "@/services/gameVersions.service";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Retrieves all game versions from the database.

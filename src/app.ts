@@ -8,6 +8,7 @@ import gamePermissionsRoutes from "@/routes/gamePermissions.routes";
 import gameVersionsRoutes from "@/routes/gameVersions.routes";
 import languageRoutes from "@/routes/language.routes";
 import teacherGuideRoutes from "@/routes/teacherGuide.routes";
+import viewsRoutes from "@/routes/views.routes";
 
 /**
  * Express application instance with configured middleware and routes.
@@ -26,6 +27,7 @@ import teacherGuideRoutes from "@/routes/teacherGuide.routes";
  * - /game-versions: Game versions management endpoints
  * - /languages: Language management endpoints
  * - /teacher-guides: Teacher guide management endpoints
+ * - /views: Database view query endpoints
  * - /health: Health check endpoint
  *
  * @type {express.Express}
@@ -58,6 +60,7 @@ app.use("/game-permissions", gamePermissionsRoutes);
 app.use("/game-versions", gameVersionsRoutes);
 app.use("/languages", languageRoutes);
 app.use("/teacher-guides", teacherGuideRoutes);
+app.use("/views", viewsRoutes);
 
 import { errorMiddleware } from "@/middlewares/error.middleware";
 

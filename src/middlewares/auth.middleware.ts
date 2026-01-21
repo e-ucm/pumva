@@ -62,18 +62,19 @@ export class Authenticator {
             for (let i = 0; i < methodConfig.tags.length; i++) {
               // Remove the last 's' from the tags to match role names
               const roleTag = methodConfig.tags[i].toLowerCase().slice(0, -1);
+              if(!roleTag.endsWith('_database') && !roleTag.endsWith('health')) {
+                if (!this.allowedRoutes[roleTag]) {
+                    this.allowedRoutes[roleTag] = {};
+                }
 
-              if (!this.allowedRoutes[roleTag]) {
-                this.allowedRoutes[roleTag] = {};
-              }
+                const tag = this.allowedRoutes[roleTag];
 
-              const tag = this.allowedRoutes[roleTag];
+                if (!tag[method]) {
+                    tag[method] = [];
+                }
 
-              if (!tag[method]) {
-                tag[method] = [];
-              }
-
-              tag[method].push(path);
+                tag[method].push(path);
+                }
             }
           }
         }
@@ -85,7 +86,7 @@ export class Authenticator {
 
       this.initialized = true;
     } catch (error) {
-      logger.error('Failed to initialize authentication paths:', error);
+      logger.error({error}, 'Failed to initialize authentication paths:');
     }
   }
 

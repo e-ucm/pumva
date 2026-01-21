@@ -2,7 +2,7 @@ import { createUser, getUserByUsername, getUsers, updateUsers, updateUserById, d
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 var user : InstanceType<typeof db.Tables.User> | null;
 /**

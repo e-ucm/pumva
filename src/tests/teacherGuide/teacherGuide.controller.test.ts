@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
 import * as teacherGuideService from "@/services/teacherGuide.service";
+import * as viewsService from "@/services/views.service";
 
 // Mock the auth middleware to accept our test tokens
 jest.mock('@/middlewares/auth.middleware', () => ({
@@ -56,7 +57,7 @@ describe("TeacherGuide Controller /teacher-guides", () => {
       //config.db.views_sql_file = config.db.sql_files_path + "/" + config.db.views_sql_filename;
       
       await db.sequelize.sync({ force: true });
-      await db.Functions.runSqlFile(config.db.views_sql_file);
+      
 
       // Create dependencies
       const user = await db.Tables.User.create({
@@ -187,9 +188,9 @@ describe("TeacherGuide Controller /teacher-guides", () => {
     expect(data.url).toBe("https://example.com/guides/updated-teacher-guide");
   });
 
-  it("GET /teacher-guides/complete-permissions-view returns complete permissions", async () => {
+  it("GET /views/guides/user/:user_id/game/:game_id returns complete guide permissions", async () => {
     const response = await request(app)
-      .get(`/teacher-guides/complete-permissions-view/${testGameId}/${testLanguageId}`)
+      .get(`/views/guides/user/${testOwnerId}/game/${testGameId}`)
       .set('Authorization', `Bearer ${bearerToken}`);
 
     expect(response.status).toBe(200);
@@ -255,12 +256,12 @@ describe("TeacherGuide Controller /teacher-guides", () => {
     jest.restoreAllMocks();
   });
 
-  it("GET /teacher-guides/complete-permissions-view/:gameId/:languageId handles service errors", async () => {
+  it("GET /views/guides/user/:user_id/game/:game_id handles service errors", async () => {
     const mockError = new Error('Service failed');
-    jest.spyOn(teacherGuideService, 'getTeacherGuidesByUserAndGame').mockRejectedValueOnce(mockError);
+    jest.spyOn(viewsService, 'getTeacherGuidesByUserAndGame').mockRejectedValueOnce(mockError);
 
     const response = await request(app)
-      .get(`/teacher-guides/complete-permissions-view/${testGameId}/${testLanguageId}`)
+      .get(`/views/guides/user/${testOwnerId}/game/${testGameId}`)
       .set('Authorization', `Bearer ${bearerToken}`);
 
     expect(response.status).toBe(500);

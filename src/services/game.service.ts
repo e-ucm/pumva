@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
-import { CompleteGamePermission } from "@/lib/views/gamesView.queries";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Retrieves all games from the database.
@@ -34,27 +33,6 @@ export async function getGames(): Promise<InstanceType<typeof db.Tables.Game>[]>
 export async function getGameById(game_id : number): Promise<InstanceType<typeof db.Tables.Game> | null> {
     const result = await db.Tables.Game.findByPk(game_id);
     return result;
-}
-
-/**
- * Retrieves all games accessible to a specific user with their permissions.
- * 
- * @async
- * @function getGamesByUser
- * @param {number} user_id - The user identifier
- * @returns {Promise<Array>} Array of game records with permission information
- * 
- * @example
- * ```typescript
- * const userGames = await getGamesByUser(456);
- * ```
- */
-export async function getGamesByUser(user_id : number): Promise<CompleteGamePermission[]> {
-    const results = await db.Functions.runViewQuery(
-      db.Views.Games.byUser,
-      { user_id }
-    );
-    return results as CompleteGamePermission[];
 }
 
 /**

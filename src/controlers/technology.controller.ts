@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as technologyService from "@/services/technology.service";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Retrieves all technologies from the database.

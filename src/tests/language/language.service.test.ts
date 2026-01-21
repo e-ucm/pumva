@@ -10,7 +10,7 @@ import {
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Integration tests for language service CRUD operations and error handling.
@@ -21,7 +21,7 @@ describe("Language service", () => {
   beforeAll(async () => {
     try {
       await db.sequelize.sync({ force: true });
-      await db.Functions.runSqlFile(config.db.views_sql_file);
+      
     } catch (err) {
       logger.error({ err }, "Setup failed");
     }

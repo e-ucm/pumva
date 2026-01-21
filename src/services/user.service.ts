@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 import jwt from 'jsonwebtoken';
 import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";

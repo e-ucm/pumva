@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { errorMiddleware } from "@/middlewares/error.middleware";
 import { logger } from "@/lib/logger";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Unit tests for error middleware handling.

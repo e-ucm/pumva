@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
-import { NotFoundError } from "@/lib/errors/notFoundError";
-import { CompleteGameGuidePermission } from "@/lib/views/guideGamesView.queries";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Retrieves all teacher guides from the database.
@@ -174,28 +173,3 @@ export async function deleteTeacherGuides(
   return db.Tables.TeacherGuide.destroy({ where });
 }
 
-/**
- * Retrieves teacher guides with user permissions for a specific user and game.
- * Uses the database view to get aggregated data including languages and permissions.
- * 
- * @async
- * @function getTeacherGuidesByUserAndGame
- * @param {number} user_id - The user identifier
- * @param {number} game_id - The game identifier
- * @returns {Promise<Array>} Array of teacher guide records with permission information
- * 
- * @example
- * ```typescript
- * const guides = await getTeacherGuidesByUserAndGame(123, 456);
- * ```
- */
-export async function getTeacherGuidesByUserAndGame(
-  user_id: number,
-  game_id: number
-): Promise<CompleteGameGuidePermission[]> {
-  const results = await db.Functions.runViewQuery(
-    db.Views.GuideGames.byUser,
-    { user_id, game_id }
-  );
-  return results as CompleteGameGuidePermission[];
-}

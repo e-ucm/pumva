@@ -10,7 +10,7 @@ import {
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Integration tests for gamePermissions service CRUD operations and error handling.
@@ -26,7 +26,7 @@ describe("GamePermissions service", () => {
   beforeAll(async () => {
     try {
       await db.sequelize.sync({ force: true });
-      await db.Functions.runSqlFile(config.db.views_sql_file);
+      
       
       // Create test user
       testUser = await db.Tables.User.create({

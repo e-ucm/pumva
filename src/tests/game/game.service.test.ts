@@ -1,9 +1,10 @@
-import { createGame, getGames, getGameById, updateGames, updateGame, deleteGames, deleteGameById, getGamesByUser } from "@/services/game.service";
+import { createGame, getGames, getGameById, updateGames, updateGame, deleteGames, deleteGameById } from "@/services/game.service";
+import { getGamesByUser } from "@/services/views.service";
 import { createTechnology } from "@/services/technology.service";
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 import { createTracker } from "@/services/tracker.service";
 import { createUser } from "@/services/user.service";
 
@@ -60,7 +61,7 @@ describe("Game service", () => {
   
   it("fetches games view by user", async () => {
     try { 
-      await db.Functions.runSqlFile(config.db.views_sql_file);
+      
       const games = await getGamesByUser(user!.user_id);
       expect(games.length).toBeGreaterThanOrEqual(1);
       expect(games[0].game_id).toBeDefined();

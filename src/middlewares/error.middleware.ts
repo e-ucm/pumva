@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { logger } from "@/lib/logger";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError, BadRequestError } from "@/lib/errors/appErrors";
 
 /**
  * Express error handling middleware.
@@ -29,6 +29,10 @@ export function errorMiddleware(
 
   if (err instanceof NotFoundError) {
     return res.status(404).json({ message: err.message });
+  }
+
+  if (err instanceof BadRequestError) {
+    return res.status(400).json({ message: err.message });
   }
 
   res.status(500).json({ message: "Internal server error" });

@@ -52,7 +52,7 @@ describe("Technology Controller /technologies", () => {
       config.db.views_sql_file = config.db.sql_files_path + "/" + config.db.views_sql_filename;
       
       await db.sequelize.sync({ force: true });
-      await db.Functions.runSqlFile(config.db.views_sql_file);
+      
       
       // Get Keycloak authentication token
       bearerToken = await getKeycloakToken();

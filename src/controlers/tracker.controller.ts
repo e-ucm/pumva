@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as trackerService from "@/services/tracker.service";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Retrieves all trackers from the database.

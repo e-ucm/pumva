@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { NotFoundError } from "@/lib/errors/notFoundError";
+import { NotFoundError } from "@/lib/errors/appErrors";
 
 /**
  * Retrieves all languages from the database.

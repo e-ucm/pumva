@@ -12,7 +12,7 @@ describe("Language DB", () => {
   beforeAll(async () => {
     try {
       await db.sequelize.sync({ force: true });
-      await db.Functions.runSqlFile(config.db.views_sql_file);
+      
     } catch (err) {
       logger.error({ err }, "Sequelize sync failed");
     }
