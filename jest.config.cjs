@@ -5,8 +5,8 @@ module.exports = {
 
   testEnvironment: "node",
   
-  maxWorkers: 1, // Run tests serially, not in parallel
-  //maxWorkers: '50%',
+  //maxWorkers: 1, // Run tests serially, not in parallel
+  maxWorkers: '50%',
   
   globals: {
     "ts-jest": {
