@@ -9,6 +9,8 @@
     "start": "node dist/server.js",
     "lint": "eslint",
     "rebuild-sqlite": "npm rebuild sqlite3",
+    "updateQueryDocs": "npx tsx updateQueryDocs.ts",
+    "updateOpenAPI": "npx tsx updateOpenAPI.ts",
     "seed": "npm run rebuild-sqlite && tsx src/lib/seeds/index.ts",
     "test": "npm run rebuild-sqlite && NODE_ENV=test jest --verbose",
     "test:watch": "npm run rebuild-sqlite && NODE_ENV=test jest --watchAll --verbose",
