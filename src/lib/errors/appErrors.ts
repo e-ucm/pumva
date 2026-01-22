@@ -22,10 +22,10 @@ export class NotFoundError extends Error {
 }
 
 /**
- * Custom error class for handling "not found" scenarios.
- * Extends the standard Error class and sets the error name to "NotFoundError".
+ * Custom error class for handling "bad request" scenarios.
+ * Extends the standard Error class and sets the error name to "BadRequestError".
  *
- * @class NotFoundError
+ * @class BadRequestError 
  * @extends {Error}
  *
  * @example
