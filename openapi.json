@@ -1,0 +1,2590 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "PUMVA API",
+    "description": "PUMVA API\n\nThis API provides endpoints for managing games, users, technologies, trackers, versions, \npermissions, languages, and teacher guides in an educational gaming platform.\n\n## Features\n- User management with role-based access (admin, teacher, student)\n- Game management with versions and technologies\n- Permission system for game access control\n- Multi-language support for teacher guides\n- Technology and tracker management\n",
+    "version": "1.0.0",
+    "contact": {
+      "name": "PUMVA Development Team",
+      "email": "support@pumva.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.pumva.com",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Users_table_databases"
+        ],
+        "summary": "Get all users or filter by username",
+        "description": "Retrieve all users from the system or filter by username query parameter",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "description": "Filter users by username",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "john_doe"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Users_table_databases"
+        ],
+        "summary": "Create a new user",
+        "description": "Create a new user in the system",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "delete": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Users_table_databases"
+        ],
+        "summary": "Delete a user",
+        "description": "Delete a user by their ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/games": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Games_table_databases"
+        ],
+        "summary": "Get all games",
+        "description": "Retrieve all games in the system",
+        "responses": {
+          "200": {
+            "description": "List of games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Game"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Create a new game",
+        "description": "Create a new game in the system",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialGame"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Game created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/games/{id}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Games_table_databases"
+        ],
+        "summary": "Get game by ID",
+        "description": "Retrieve a specific game by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Games_table_databases"
+        ],
+        "summary": "Update a game",
+        "description": "Update an existing game by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialGame"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Game updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Games_table_databases"
+        ],
+        "summary": "Delete a game",
+        "description": "Delete a game by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Game deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/games/{gameId}/actual-version/{versionId}": {
+      "put": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Set game version as actual",
+        "description": "Set a specific version as the actual/current version for a game",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "description": "Version ID to set as actual",
+            "schema": {
+              "type": "integer",
+              "example": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game version set as actual successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/game-versions": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Game_Version_table_databases"
+        ],
+        "summary": "Get all game versions",
+        "description": "Retrieve all game versions in the system",
+        "responses": {
+          "200": {
+            "description": "List of game versions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameVersion"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Create a new game version",
+        "description": "Create a new version for a game",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialGameVersion"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Game version created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/game-versions/{id}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Game_Version_table_databases"
+        ],
+        "summary": "Get game version by ID",
+        "description": "Retrieve a specific game version by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Game version ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game version details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameVersion"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Update a game version",
+        "description": "Update an existing game version",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Game version ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialGameVersion"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Game version updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Delete a game version",
+        "description": "Delete a game version by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Game version ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Game version deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/game-permissions": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Game_Permissions_table_databases"
+        ],
+        "summary": "Get all game permissions",
+        "description": "Retrieve all game permissions in the system",
+        "responses": {
+          "200": {
+            "description": "List of game permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GamePermission"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Create a new game permission",
+        "description": "Create a new permission for a user on a game",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialGamePermission"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Game permission created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GamePermission"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/game-permissions/{userId}/{gameId}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Game_Permissions_table_databases"
+        ],
+        "summary": "Get game permission by user and game",
+        "description": "Retrieve a specific game permission by user ID and game ID",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game permission details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GamePermission"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Update a game permission",
+        "description": "Update an existing game permission",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialGamePermission"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Game permission updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GamePermission"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Delete a game permission",
+        "description": "Delete a game permission by user ID and game ID",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Game permission deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/technologies": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Technologies_table_databases"
+        ],
+        "summary": "Get all technologies",
+        "description": "Retrieve all technologies in the system",
+        "responses": {
+          "200": {
+            "description": "List of technologies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Technology"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Create a new technology",
+        "description": "Create a new technology in the system",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialTechnology"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Technology created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Technology"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/technologies/{id}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Technologies_table_databases"
+        ],
+        "summary": "Get technology by ID",
+        "description": "Retrieve a specific technology by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Technology ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Technology details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Technology"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Update a technology",
+        "description": "Update an existing technology",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Technology ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialTechnology"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Technology updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Technology"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Delete a technology",
+        "description": "Delete a technology by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Technology ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Technology deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/trackers": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Trackers_table_databases"
+        ],
+        "summary": "Get all trackers",
+        "description": "Retrieve all trackers in the system",
+        "responses": {
+          "200": {
+            "description": "List of trackers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tracker"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Create a new tracker",
+        "description": "Create a new tracker in the system",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialTracker"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tracker created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tracker"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/trackers/{id}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Trackers_table_databases"
+        ],
+        "summary": "Get tracker by ID",
+        "description": "Retrieve a specific tracker by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Tracker ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tracker details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tracker"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Update a tracker",
+        "description": "Update an existing tracker",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Tracker ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialTracker"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tracker updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tracker"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Delete a tracker",
+        "description": "Delete a tracker by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Tracker ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tracker deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/languages": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Languages_table_databases"
+        ],
+        "summary": "Get all languages",
+        "description": "Retrieve all languages in the system",
+        "responses": {
+          "200": {
+            "description": "List of languages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Language"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Create a new language",
+        "description": "Create a new language in the system",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialLanguage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Language created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Language"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/languages/{id}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Languages_table_databases"
+        ],
+        "summary": "Get language by ID",
+        "description": "Retrieve a specific language by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Language ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Language details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Language"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Update a language",
+        "description": "Update an existing language",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Language ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialLanguage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Language updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Language"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Delete a language",
+        "description": "Delete a language by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Language ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Language deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/teacher-guides": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Teacher_Guides_table_databases"
+        ],
+        "summary": "Get all teacher guides",
+        "description": "Retrieve all teacher guides in the system",
+        "responses": {
+          "200": {
+            "description": "List of teacher guides",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TeacherGuide"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Create a new teacher guide",
+        "description": "Create a new teacher guide for a game and language",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialTeacherGuide"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Teacher guide created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherGuide"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/teacher-guides/{gameId}/{languageId}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Teacher_Guides_table_databases"
+        ],
+        "summary": "Get teacher guide by game and language",
+        "description": "Retrieve a specific teacher guide by game ID and language ID",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "languageId",
+            "in": "path",
+            "required": true,
+            "description": "Language ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Teacher guide details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherGuide"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Update a teacher guide",
+        "description": "Update an existing teacher guide",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "languageId",
+            "in": "path",
+            "required": true,
+            "description": "Language ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialTeacherGuide"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Teacher guide updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherGuide"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Delete a teacher guide",
+        "description": "Delete a teacher guide by game ID and language ID",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "languageId",
+            "in": "path",
+            "required": true,
+            "description": "Language ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Teacher guide deleted successfully"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/teacher-guides/complete-permissions-view/{gameId}/{languageId}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers"
+        ],
+        "summary": "Get complete game guide permissions view",
+        "description": "Retrieve complete permissions view for teacher guides by game and language",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "languageId",
+            "in": "path",
+            "required": true,
+            "description": "Language ID",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Complete permissions view",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GuidePermission"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Healths"
+        ],
+        "summary": "Health check",
+        "description": "Check if the API is running and healthy",
+        "responses": {
+          "200": {
+            "description": "API is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "healthy"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "version": {
+                      "type": "string",
+                      "example": "1.0.0"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/views/games/user/{user_id}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Views_databases",
+          "Games_databases"
+        ],
+        "summary": "Get games for a specific user",
+        "description": "Retrieve games with user permissions using the v_complete_game_permissions view",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "User ID to get games for",
+            "schema": {
+              "type": "integer",
+              "example": 123
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of games with user permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompleteGamePermission"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/views/games/public": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Views_databases",
+          "Games_databases"
+        ],
+        "summary": "Get all public games",
+        "description": "Retrieve all public games using the v_public_games_permissions view",
+        "responses": {
+          "200": {
+            "description": "List of public games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompleteGamePermission"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/views/guides/user/{user_id}/game/{game_id}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Views_databases",
+          "Teacher Guides_databases"
+        ],
+        "summary": "Get teacher guides for a user and game",
+        "description": "Retrieve teacher guides with permissions using the v_game_guide_url_permissions view",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "User ID",
+            "schema": {
+              "type": "integer",
+              "example": 123
+            }
+          },
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "description": "Game ID",
+            "schema": {
+              "type": "integer",
+              "example": 456
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of teacher guides with permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompleteGameGuidePermission"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/views/users/username/{username}": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Teachers",
+          "Views_databases",
+          "Users_databases"
+        ],
+        "summary": "Get user by username",
+        "description": "Retrieve user information by username using database view",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "description": "Username to search for",
+            "schema": {
+              "type": "string",
+              "example": "john_doe"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "Unique identifier for the user",
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username",
+            "example": "john_doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "john@example.com"
+          },
+          "role": {
+            "type": "string",
+            "description": "User's role in the system",
+            "enum": [
+              "admin",
+              "teacher",
+              "student"
+            ],
+            "example": "teacher"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the user was created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the user was last updated"
+          }
+        }
+      },
+      "PartialUser": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Unique username",
+            "example": "john_doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "john@example.com"
+          },
+          "role": {
+            "type": "string",
+            "description": "User's role in the system",
+            "enum": [
+              "admin",
+              "teacher",
+              "student"
+            ],
+            "example": "teacher"
+          }
+        }
+      },
+      "Game": {
+        "type": "object",
+        "properties": {
+          "game_id": {
+            "type": "integer",
+            "description": "Unique identifier for the game",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the game",
+            "example": "Educational Math Game"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the game",
+            "example": "An interactive game for learning mathematics"
+          },
+          "public": {
+            "type": "boolean",
+            "description": "Whether the game is publicly accessible",
+            "example": true
+          },
+          "actual": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Current version ID that is set as actual",
+            "example": 5
+          },
+          "owner_id": {
+            "type": "integer",
+            "description": "ID of the user who owns the game",
+            "example": 1
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the game",
+            "enum": [
+              "WEB",
+              "DESKTOP",
+              "MOBILE"
+            ],
+            "example": "WEB"
+          },
+          "technology_id": {
+            "type": "integer",
+            "description": "ID of the technology used by the game",
+            "example": 1
+          },
+          "tracker_id": {
+            "type": "integer",
+            "description": "ID of the tracker associated with the game",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PartialGame": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Display name of the game",
+            "example": "Educational Math Game"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the game",
+            "example": "An interactive game for learning mathematics"
+          },
+          "public": {
+            "type": "boolean",
+            "description": "Whether the game is publicly accessible",
+            "example": true
+          },
+          "owner_id": {
+            "type": "integer",
+            "description": "ID of the user who owns the game",
+            "example": 1
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the game",
+            "enum": [
+              "WEB",
+              "DESKTOP",
+              "MOBILE"
+            ],
+            "example": "WEB"
+          },
+          "technology_id": {
+            "type": "integer",
+            "description": "ID of the technology used by the game",
+            "example": 1
+          },
+          "tracker_id": {
+            "type": "integer",
+            "description": "ID of the tracker associated with the game",
+            "example": 1
+          }
+        }
+      },
+      "GameVersion": {
+        "type": "object",
+        "properties": {
+          "version_id": {
+            "type": "integer",
+            "description": "Unique identifier for the version",
+            "example": 1
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the associated game",
+            "example": 1
+          },
+          "version": {
+            "type": "string",
+            "description": "Version string/number",
+            "example": "1.0.0"
+          },
+          "external_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "External URL where this version is hosted",
+            "example": "https://example.com/game/v1.0.0"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PartialGameVersion": {
+        "type": "object",
+        "properties": {
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the associated game",
+            "example": 1
+          },
+          "version": {
+            "type": "string",
+            "description": "Version string/number",
+            "example": "1.0.0"
+          },
+          "external_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "External URL where this version is hosted",
+            "example": "https://example.com/game/v1.0.0"
+          }
+        }
+      },
+      "GamePermission": {
+        "type": "object",
+        "properties": {
+          "permission_id": {
+            "type": "integer",
+            "description": "Unique identifier for the permission",
+            "example": 1
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user",
+            "example": 1
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the game",
+            "example": 1
+          },
+          "permissions": {
+            "type": "string",
+            "description": "Permission level granted",
+            "enum": [
+              "read",
+              "write",
+              "admin"
+            ],
+            "example": "read"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PartialGamePermission": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user",
+            "example": 1
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the game",
+            "example": 1
+          },
+          "permissions": {
+            "type": "string",
+            "description": "Permission level to grant",
+            "enum": [
+              "read",
+              "write",
+              "admin"
+            ],
+            "example": "read"
+          }
+        }
+      },
+      "Technology": {
+        "type": "object",
+        "properties": {
+          "technology_id": {
+            "type": "integer",
+            "description": "Unique identifier for the technology",
+            "example": 1
+          },
+          "technology": {
+            "type": "string",
+            "description": "Name of the technology",
+            "example": "Unity"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PartialTechnology": {
+        "type": "object",
+        "properties": {
+          "technology": {
+            "type": "string",
+            "description": "Name of the technology",
+            "example": "Unity"
+          }
+        }
+      },
+      "Tracker": {
+        "type": "object",
+        "properties": {
+          "tracker_id": {
+            "type": "integer",
+            "description": "Unique identifier for the tracker",
+            "example": 1
+          },
+          "tracker": {
+            "type": "string",
+            "description": "Name of the tracker",
+            "example": "unity_tracker"
+          },
+          "technology_id": {
+            "type": "integer",
+            "description": "ID of the associated technology",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PartialTracker": {
+        "type": "object",
+        "properties": {
+          "tracker": {
+            "type": "string",
+            "description": "Name of the tracker",
+            "example": "unity_tracker"
+          },
+          "technology_id": {
+            "type": "integer",
+            "description": "ID of the associated technology",
+            "example": 1
+          }
+        }
+      },
+      "Language": {
+        "type": "object",
+        "properties": {
+          "language_id": {
+            "type": "integer",
+            "description": "Unique identifier for the language",
+            "example": 1
+          },
+          "language": {
+            "type": "string",
+            "description": "Name of the language",
+            "example": "English"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PartialLanguage": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "description": "Name of the language",
+            "example": "Spanish"
+          }
+        }
+      },
+      "TeacherGuide": {
+        "type": "object",
+        "properties": {
+          "guide_id": {
+            "type": "integer",
+            "description": "Unique identifier for the teacher guide",
+            "example": 1
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the associated game",
+            "example": 1
+          },
+          "language_id": {
+            "type": "integer",
+            "description": "ID of the associated language",
+            "example": 1
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the teacher guide resource",
+            "example": "https://example.com/guides/math-game-guide"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PartialTeacherGuide": {
+        "type": "object",
+        "properties": {
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the associated game",
+            "example": 1
+          },
+          "language_id": {
+            "type": "integer",
+            "description": "ID of the associated language",
+            "example": 1
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the teacher guide resource",
+            "example": "https://example.com/guides/math-game-guide"
+          }
+        }
+      },
+      "GuidePermission": {
+        "type": "object",
+        "properties": {
+          "game_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "language_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "permissions": {
+            "type": "string",
+            "example": "read"
+          },
+          "user_id": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Resource not found"
+          },
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "NOT_FOUND"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the error occurred"
+          }
+        }
+      },
+      "CompleteGamePermission": {
+        "type": "object",
+        "description": "Complete game permission record with aggregated data from games, permissions, users, technologies, and trackers",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user with permission",
+            "example": 123
+          },
+          "username": {
+            "type": "string",
+            "description": "Username of the user",
+            "example": "john_doe"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role of the user",
+            "example": "TEACHER"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email of the user",
+            "example": "john@example.com"
+          },
+          "permission": {
+            "type": "string",
+            "description": "Permission type",
+            "enum": [
+              "READ",
+              "WRITE"
+            ],
+            "example": "READ"
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the game",
+            "example": 456
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the game",
+            "example": "Educational Game"
+          },
+          "public": {
+            "type": "boolean",
+            "description": "Whether the game is public",
+            "example": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Game description",
+            "example": "An educational game for learning math"
+          },
+          "owner_id": {
+            "type": "integer",
+            "description": "ID of the game owner",
+            "example": 789
+          },
+          "type": {
+            "type": "string",
+            "description": "Game type",
+            "enum": [
+              "WEB",
+              "DESKTOP"
+            ],
+            "example": "WEB"
+          },
+          "actual_version_id": {
+            "type": "integer",
+            "description": "ID of the current version",
+            "example": 1
+          },
+          "actual_version_url": {
+            "type": "string",
+            "description": "URL of the current version",
+            "example": "https://game.example.com/v1"
+          },
+          "technology_name": {
+            "type": "string",
+            "description": "Name of the technology used",
+            "example": "Unity"
+          },
+          "tracker_name": {
+            "type": "string",
+            "description": "Name of the tracker used",
+            "example": "Analytics Tracker"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Record creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Record update timestamp"
+          }
+        }
+      },
+      "CompleteGameGuidePermission": {
+        "type": "object",
+        "description": "Complete game guide permission record with aggregated data from games, guides, languages, and permissions",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user with permission",
+            "example": 123
+          },
+          "username": {
+            "type": "string",
+            "description": "Username of the user",
+            "example": "john_doe"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role of the user",
+            "example": "TEACHER"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email of the user",
+            "example": "john@example.com"
+          },
+          "permission": {
+            "type": "string",
+            "description": "Permission type",
+            "enum": [
+              "READ",
+              "WRITE"
+            ],
+            "example": "READ"
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "ID of the game",
+            "example": 456
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the teacher guide",
+            "example": "en"
+          },
+          "teacher_guide_url": {
+            "type": "string",
+            "description": "URL of the teacher guide",
+            "example": "https://guides.example.com/game456/en"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Record creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Record update timestamp"
+          }
+        }
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "message": "Resource not found",
+              "code": "NOT_FOUND"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad request - invalid input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "message": "Invalid input provided",
+              "code": "BAD_REQUEST"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "message": "Internal server error",
+              "code": "INTERNAL_ERROR"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Admins",
+      "description": "Administrative operations (admin access only)"
+    },
+    {
+      "name": "Teachers",
+      "description": "Teacher operations (teacher access)"
+    },
+    {
+      "name": "Healths",
+      "description": "Health check operations (no authentication required)"
+    },
+    {
+      "name": "Views_databases",
+      "description": "Database view operations for complex data aggregations (read-only)"
+    },
+    {
+      "name": "Games_table_databases",
+      "description": "Game table management operations"
+    },
+    {
+      "name": "Users_table_databases",
+      "description": "User table management operations"
+    },
+    {
+      "name": "Teacher_Guides_table_databases",
+      "description": "Teacher guide table management operations"
+    },
+    {
+      "name": "Game_Version_table_databases",
+      "description": "Game version table management operations"
+    },
+    {
+      "name": "Game_Permissions_table_databases",
+      "description": "Game permission table management operations"
+    },
+    {
+      "name": "Technologies_table_databases",
+      "description": "Technology table management operations"
+    },
+    {
+      "name": "Trackers_table_databases",
+      "description": "Tracker table management operations"
+    },
+    {
+      "name": "Languages_table_databases",
+      "description": "Language table management operations"
+    }
+  ]
+}
