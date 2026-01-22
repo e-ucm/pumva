@@ -105,9 +105,7 @@ describe("Language service", () => {
     expect(german).toBeDefined();
     
     await deleteLanguageById(german.language_id);
-    
-    const deletedLanguage = await getLanguageById(german.language_id);
-    expect(deletedLanguage).toBeNull();
+    await expect(getLanguageById(german.language_id)).rejects.toThrow(NotFoundError);
   });
 
   it("delete language by id should throw when language not found", async () => {

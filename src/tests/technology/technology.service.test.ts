@@ -70,20 +70,17 @@ describe("Technology service", () => {
       expect(nb).toBe(1);
       const technologies = await getTechnologies();
       expect(technologies.length).toBeGreaterThanOrEqual(0);
-      technology = await getTechnologyById(technology!.technology_id);
-      expect(technology).toBeNull();
+      expect(getTechnologyById(technology!.technology_id)).rejects.toThrow(NotFoundError);
     });
 
     it("delete technology by id", async () => {
       technology = await createTechnology("RPG Maker");
       expect(technology).toBeDefined();
       await deleteTechnologyById(technology!.technology_id);
-      let deleted_technology = await getTechnologyById(technology!.technology_id);
-      expect(deleted_technology).toBeNull();
+      expect(getTechnologyById(technology!.technology_id)).rejects.toThrow(NotFoundError);
     });
 
     it("delete technology by id should throw when not technology id defined", async () => {
-        expect.assertions(1);
-        await expect(deleteTechnologyById(technology!.technology_id)).rejects.toThrow(NotFoundError);
+        await expect(deleteTechnologyById(999999)).rejects.toThrow(NotFoundError);
     });
 });

@@ -23,7 +23,8 @@ export async function getLanguages(): Promise<InstanceType<typeof db.Tables.Lang
  * @async
  * @function getLanguageById
  * @param {number} language_id - The language identifier
- * @returns {Promise<Object|null>} The language record or null if not found
+ * @returns {Promise<Object>} The language record
+ * @throws {NotFoundError} If language with given ID does not exist
  * 
  * @example
  * ```typescript
@@ -32,8 +33,12 @@ export async function getLanguages(): Promise<InstanceType<typeof db.Tables.Lang
  */
 export async function getLanguageById(
   language_id: number
-): Promise<InstanceType<typeof db.Tables.Language> | null> {
-  return db.Tables.Language.findByPk(language_id);
+): Promise<InstanceType<typeof db.Tables.Language>> {
+  const result = await db.Tables.Language.findByPk(language_id);
+  if (!result) {
+    throw new NotFoundError("Language not found");
+  }
+  return result;
 }
 
 /**
@@ -41,14 +46,14 @@ export async function getLanguageById(
  * 
  * @async
  * @function createLanguage
- * @param {string} language - Language name (e.g., 'English', 'Spanish')
- * @returns {Promise<Object>} The created language record
+ * @param {Partial<InstanceType<typeof db.Tables.Language>>} language - Language data (e.g., { language: 'English' })
+ * @returns {Promise<InstanceType<typeof db.Tables.Language>>} The created language record
  * 
  * @throws {Error} If database operation fails
  * 
  * @example
  * ```typescript
- * const lang = await createLanguage('French');
+ * const lang = await createLanguage({ language: 'French' });
  * ```
  */
 export async function createLanguage(
@@ -62,8 +67,8 @@ export async function createLanguage(
  * 
  * @async
  * @function updateLanguages
- * @param {Object} where - Condition to find languages to update
- * @param {Object} payload - Partial language data to update
+ * @param {Partial<InstanceType<typeof db.Tables.Language>>} where - Condition to find languages to update
+ * @param {Partial<InstanceType<typeof db.Tables.Language>>} payload - Partial language data to update
  * @returns {Promise<number>} Number of affected rows
  * 
  * @example
@@ -85,8 +90,8 @@ export async function updateLanguages(
  * @async
  * @function updateLanguageById
  * @param {number} language_id - The language identifier
- * @param {Object} payload - Partial language data to update
- * @returns {Promise<Object>} The updated language record
+ * @param {Partial<InstanceType<typeof db.Tables.Language>>} payload - Partial language data to update
+ * @returns {Promise<InstanceType<typeof db.Tables.Language>>} The updated language record
  * 
  * @throws {NotFoundError} If language with given ID does not exist
  * 
@@ -139,7 +144,7 @@ export async function deleteLanguageById(language_id: number): Promise<void> {
  * 
  * @async
  * @function deleteLanguages
- * @param {Object} where - Condition to find languages to delete
+ * @param {Partial<InstanceType<typeof db.Tables.Language>>} where - Condition to find languages to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example

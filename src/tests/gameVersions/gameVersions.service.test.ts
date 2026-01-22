@@ -151,8 +151,7 @@ describe("GameVersions service", () => {
     
     await deleteGameVersionById(tempVersion.version_id);
     
-    const deletedVersion = await getGameVersionById(tempVersion.version_id);
-    expect(deletedVersion).toBeNull();
+    await expect(getGameVersionById(tempVersion.version_id)).rejects.toThrow(NotFoundError);
   });
 
   it("delete game version by id should throw when version not found", async () => {

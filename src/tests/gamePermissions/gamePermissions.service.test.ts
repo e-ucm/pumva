@@ -152,11 +152,10 @@ describe("GamePermissions service", () => {
     });
     expect(nb).toBe(1);
     
-    const permission = await getGamePermissionById(
+    await expect(getGamePermissionById(
       testGame!.game_id,
       testUser2!.user_id
-    );
-    expect(permission).toBeNull();
+    )).rejects.toThrow(NotFoundError);
   });
 
   it("delete game permission by composite id", async () => {
@@ -165,17 +164,16 @@ describe("GamePermissions service", () => {
       testUser!.user_id
     );
     
-    const deletedPermission = await getGamePermissionById(
+    await expect(getGamePermissionById(
       testGame!.game_id,
       testUser!.user_id
-    );
-    expect(deletedPermission).toBeNull();
+    )).rejects.toThrow(NotFoundError);
   });
 
   it("delete game permission by id should throw when permission not found", async () => {
     expect.assertions(1);
     await expect(
-      deleteGamePermissionById(testGame!.game_id, testUser!.user_id)
+      deleteGamePermissionById(999999, 999999)
     ).rejects.toThrow(NotFoundError);
   });
 });

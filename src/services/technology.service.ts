@@ -23,15 +23,19 @@ export async function getTechnologies() : Promise<InstanceType<typeof db.Tables.
  * @async
  * @function getTechnologyById
  * @param {number} technology_id - The technology identifier
- * @returns {Promise<Object|null>} The technology record or null if not found
+ * @returns {Promise<InstanceType<typeof db.Tables.Technology>>} The technology record
+ * @throws {NotFoundError} If technology with given ID does not exist
  * 
  * @example
  * ```typescript
  * const tech = await getTechnologyById(1);
  * ```
  */
-export async function getTechnologyById(technology_id : number): Promise<InstanceType<typeof db.Tables.Technology> | null> {
+export async function getTechnologyById(technology_id : number): Promise<InstanceType<typeof db.Tables.Technology>> {
     const result = await db.Tables.Technology.findByPk(technology_id);
+    if (!result) {
+      throw new NotFoundError("Technology not found");
+    }
     return result;
 }
 
@@ -41,7 +45,7 @@ export async function getTechnologyById(technology_id : number): Promise<Instanc
  * @async
  * @function createTechnology
  * @param {string} technology - Technology name (e.g., 'Unity', 'Unreal Engine')
- * @returns {Promise<Object>} The created technology record
+ * @returns {Promise<InstanceType<typeof db.Tables.Technology>>} The created technology record
  * 
  * @throws {Error} If database operation fails
  * 
@@ -59,8 +63,8 @@ export async function createTechnology(technology: string) : Promise<InstanceTyp
  * 
  * @async
  * @function updateTechnologies
- * @param {Object} where - Condition to find technologies to update
- * @param {Object} payload - Partial technology data to update
+ * @param {Partial<InstanceType<typeof db.Tables.Technology>>} where - Condition to find technologies to update
+ * @param {Partial<InstanceType<typeof db.Tables.Technology>>} payload - Partial technology data to update
  * @returns {Promise<number>} Number of affected rows
  * 
  * @example
@@ -79,8 +83,8 @@ export async function updateTechnologies(where: Partial<InstanceType<typeof db.T
  * @async
  * @function updateTechnology
  * @param {number} technologyId - The technology identifier
- * @param {Object} payload - Partial technology data to update
- * @returns {Promise<Object>} The updated technology record
+ * @param {Partial<InstanceType<typeof db.Tables.Technology>>} payload - Partial technology data to update
+ * @returns {Promise<InstanceType<typeof db.Tables.Technology>>} The updated technology record
  * 
  * @throws {NotFoundError} If technology with given ID does not exist
  * 
@@ -130,7 +134,7 @@ export async function deleteTechnologyById(technologyId: number): Promise<void> 
  * 
  * @async
  * @function deleteTechnologies
- * @param {Object} where - Condition to find technologies to delete
+ * @param {Partial<InstanceType<typeof db.Tables.Technology>>} where - Condition to find technologies to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example

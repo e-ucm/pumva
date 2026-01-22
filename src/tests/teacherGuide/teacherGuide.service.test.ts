@@ -177,11 +177,10 @@ describe("TeacherGuide service", () => {
     });
     expect(nb).toBe(1);
     
-    const guide = await getTeacherGuideById(
+    await expect(getTeacherGuideById(
       testGame!.game_id,
       testLanguage2!.language_id
-    );
-    expect(guide).toBeNull();
+    )).rejects.toThrow(NotFoundError);
   });
 
   it("delete teacher guide by composite id", async () => {
@@ -190,11 +189,10 @@ describe("TeacherGuide service", () => {
       testLanguage!.language_id
     );
     
-    const deletedGuide = await getTeacherGuideById(
+    await expect(getTeacherGuideById(
       testGame!.game_id,
       testLanguage!.language_id
-    );
-    expect(deletedGuide).toBeNull();
+    )).rejects.toThrow(NotFoundError);
   });
 
   it("delete teacher guide by id should throw when guide not found", async () => {

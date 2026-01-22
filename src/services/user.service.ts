@@ -16,46 +16,32 @@ interface DecodedJWT {
  * Interface for decoded Keycloak JWT payload
  */
 interface KeycloakJWTPayload {
-  iss: string;
-  sub: string;
-  preferred_username: string;
-  username: string;
-  email: string;
-  realm_access?: {
-    roles: string[];
-  };
-  [key: string]: any;
-}
-
-/**
- * Interface for user filter parameters
- */
-interface UserFilter {
-  username?: string;
-}
-
-/**
- * Interface for simplified user data
- */
-interface SimplifiedUser {
-  username: string;
-  email: string;
-  role: string;
+  data: {
+    iss: string;
+    sub: string;
+    preferred_username: string;
+    username: string;
+    email: string;
+    realm_access?: {
+      roles: string[];
+    };
+    [key: string]: any;
+  }
 }
 
 /**
  * Retrieves all users from the database.
  * 
  * @async
- * @function getUsers
+ * @function getAllUsers
  * @returns {Promise<Array>} Array of all user records
  * 
  * @example
  * ```typescript
- * const users = await getUsers();
+ * const users = await getAllUsers();
  * ```
  */
-export async function getUsers(): Promise<InstanceType<typeof db.Tables.User>[]> {
+export async function getAllUsers(): Promise<InstanceType<typeof db.Tables.User>[]> {
   return db.Tables.User.findAll();
 }
 
@@ -65,15 +51,19 @@ export async function getUsers(): Promise<InstanceType<typeof db.Tables.User>[]>
  * @async
  * @function getUserById
  * @param {number} user_id - The user identifier
- * @returns {Promise<Object|null>} The user record or null if not found
+ * @returns {Promise<InstanceType<typeof db.Tables.User>>} The user record
+ * @throws {NotFoundError} If user with given ID does not exist
  * 
  * @example
  * ```typescript
  * const user = await getUserById(123);
  * ```
  */
-export async function getUserById(user_id : number): Promise<InstanceType<typeof db.Tables.User> | null> {
+export async function getUserById(user_id : number): Promise<InstanceType<typeof db.Tables.User>> {
     const result = await db.Tables.User.findByPk(user_id);
+    if (!result) {
+      throw new NotFoundError("User not found");
+    }
     return result;
 }
 
@@ -83,15 +73,20 @@ export async function getUserById(user_id : number): Promise<InstanceType<typeof
  * @async
  * @function getUserByUsername
  * @param {string} username - The username to search for
- * @returns {Promise<Object|null>} The user record or null if not found
+ * @returns {Promise<InstanceType<typeof db.Tables.User>>} The user record
+ * @throws {NotFoundError} If user with given username does not exist
  * 
  * @example
  * ```typescript
  * const user = await getUserByUsername('john_doe');
  * ```
  */
-export async function getUserByUsername(username: string): Promise<InstanceType<typeof db.Tables.User> | null> {
-  return db.Tables.User.findOne({ where: { username } });
+export async function getUserByUsername(username: string): Promise<InstanceType<typeof db.Tables.User>> {
+  const result = await db.Tables.User.findOne({ where: { username } });
+  if (!result) {
+    throw new NotFoundError("User not found");
+  }
+  return result;
 }
 
 /**
@@ -99,9 +94,8 @@ export async function getUserByUsername(username: string): Promise<InstanceType<
  * 
  * @async
  * @function createUser
- * @param {Object} user - Partial user data (username, email, role required)
- * @returns {Promise<Object|null>} The created user record or null on failure
- * 
+ * @param {Partial<InstanceType<typeof db.Tables.User>>} user - Partial user data (username, email, role required)
+ * @returns {Promise<InstanceType<typeof db.Tables.User>>} The created user record
  * @throws {Error} If database operation fails
  * 
  * @example
@@ -109,7 +103,8 @@ export async function getUserByUsername(username: string): Promise<InstanceType<
  * const user = await createUser({ username: 'john', email: 'john@example.com', role: 'student' });
  * ```
  */
-export async function createUser(user : Partial<InstanceType<typeof db.Tables.User>>): Promise<InstanceType<typeof db.Tables.User> | null> {
+export async function createUser(user : Partial<InstanceType<typeof db.Tables.User>>): Promise<InstanceType<typeof db.Tables.User>> {
+  logger.debug("Creating user: " + JSON.stringify(user));
   return db.Tables.User.create(user);
 }
 
@@ -130,6 +125,9 @@ export async function createUser(user : Partial<InstanceType<typeof db.Tables.Us
  */
 export async function updateUsers(where: Partial<InstanceType<typeof db.Tables.User>>, payload : Partial<InstanceType<typeof db.Tables.User>>): Promise<number> {
   const [affectedRows] = await db.Tables.User.update(payload, { where : where });
+  if (affectedRows === 0) {
+    throw new NotFoundError("User not found");
+  }
   return affectedRows;
 }
 
@@ -139,8 +137,8 @@ export async function updateUsers(where: Partial<InstanceType<typeof db.Tables.U
  * @async
  * @function updateUserById
  * @param {number} userId - The user identifier
- * @param {Object} payload - Partial user data to update
- * @returns {Promise<Object>} The updated user record
+ * @param {Partial<InstanceType<typeof db.Tables.User>>} payload - Partial user data to update
+ * @returns {Promise<InstanceType<typeof db.Tables.User>>} The updated user record
  * 
  * @throws {NotFoundError} If user with given ID does not exist
  * 
@@ -190,7 +188,7 @@ export async function deleteUserById(userId: number): Promise<void> {
  * 
  * @async
  * @function deleteUsers
- * @param {Object} where - Condition to find users to delete
+ * @param {Partial<InstanceType<typeof db.Tables.User>>} where - Condition to find users to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example
@@ -199,7 +197,11 @@ export async function deleteUserById(userId: number): Promise<void> {
  * ```
  */
 export async function deleteUsers(where: Partial<InstanceType<typeof db.Tables.User>>): Promise<number> {
-  return db.Tables.User.destroy({ where });
+  const affectedRows = await db.Tables.User.destroy({ where });
+  if (affectedRows === 0) {
+    throw new NotFoundError("User not found");
+  }
+  return affectedRows;
 }
 
 /**
@@ -213,7 +215,7 @@ export async function deleteUsers(where: Partial<InstanceType<typeof db.Tables.U
  * @async
  * @function validateJWT
  * @param {string} token - The JWT token to validate
- * @returns {Promise<Object>} The decoded token data with user information
+ * @returns {Promise<KeycloakJWTPayload>} The decoded token data with user information
  * 
  * @throws {Error} If token is invalid, expired, or verification fails
  * 
@@ -227,7 +229,7 @@ export async function deleteUsers(where: Partial<InstanceType<typeof db.Tables.U
  * }
  * ```
  */
-export async function validateJWT(token: string): Promise<{ data: any }> {
+export async function validateJWT(token: string): Promise<KeycloakJWTPayload> {
   return new Promise((resolve, reject) => {
     try {
       logger.debug('Token validation starting');
@@ -274,7 +276,7 @@ export async function validateJWT(token: string): Promise<{ data: any }> {
           KeycloakKeyManager.checkKey(header.kid, token)
             .then(() => KeycloakKeyManager.getKey(header.kid))
             .then((publicKey) => {
-              jwt.verify(token, publicKey, async (error, verifiedPayload: any) => {
+              jwt.verify(token, publicKey, async (error: Error | null, verifiedPayload: any) => {
                 if (error) {
                   // Fall back to decoded payload
                   const result = { data: { ...decodedPayloadOnly, username: inferredUsername } };
@@ -325,10 +327,18 @@ export async function validateJWT(token: string): Promise<{ data: any }> {
  */
 export async function getUsersWithFilter(filter?: { username?: string }): Promise<InstanceType<typeof db.Tables.User>[]> {
   if (filter?.username) {
-    const user = await getUserByUsername(filter.username);
-    return user ? [user] : [];
+    try {
+      const user = await getUserByUsername(filter.username);
+      return [user];
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return [];
+      }
+      throw error;
+    }
+  } else {
+    return getAllUsers();
   }
-  return getUsers();
 }
 
 /**
@@ -337,9 +347,9 @@ export async function getUsersWithFilter(filter?: { username?: string }): Promis
  * @async
  * @function createOrUpdateKeycloakUser
  * @param {any} decoded - Decoded Keycloak JWT payload
- * @returns {Promise<Object>} Simplified user object
+ * @returns {Promise<KeycloakJWTPayload>} Keycloak JWT payload with user data
  */
-async function createOrUpdateKeycloakUser(decoded: any): Promise<{ data: any }> {
+async function createOrUpdateKeycloakUser(decoded: any): Promise<KeycloakJWTPayload> {
   logger.debug("CreateOrUpdateKeycloakUser - Decoded: " + JSON.stringify(decoded));
   
   if (!KeycloakKeyManager.isEnabled()) {
@@ -378,16 +388,17 @@ async function createOrUpdateKeycloakUser(decoded: any): Promise<{ data: any }> 
  * @async
  * @function createUserFromKeycloakJWT
  * @param {any} decoded - Decoded Keycloak JWT payload
- * @returns {Promise<Object>} Created user instance
+ * @returns {Promise<SimplifiedUser>} Created user instance
  */
-async function createUserFromKeycloakJWT(decoded: any): Promise<InstanceType<typeof db.Tables.User> | null> {
+async function createUserFromKeycloakJWT(decoded: any): Promise<InstanceType<typeof db.Tables.User>> {
   logger.debug("createUserFromJWT: " + JSON.stringify(decoded));
   
   const userData = {
-    username: decoded.preferred_username || decoded.sub || decoded.username,
+    username: decoded.preferred_username || decoded.username || decoded.sub,
     email: decoded.email,
     role: getRoleFromKeycloakJWT(decoded)
   };
+  logger.info("createUserFromJWT - UserData: " + JSON.stringify(userData));
 
   return await createUser(userData);
 }
@@ -401,6 +412,11 @@ async function createUserFromKeycloakJWT(decoded: any): Promise<InstanceType<typ
  */
 function getRoleFromKeycloakJWT(decoded: any): string {
   logger.debug("getRoleFromJWT: " + JSON.stringify(decoded));
+  
+  // If no realm_access is provided at all, default to student
+  if (!decoded.realm_access) {
+    return 'student';
+  }
   
   let role = 'norole';
   
@@ -432,15 +448,18 @@ function getRoleFromKeycloakJWT(decoded: any): string {
  * 
  * @function simplifyUser
  * @param {any} user - User instance from database
- * @returns {Object} Simplified user object
+ * @returns {KeycloakJWTPayload} Keycloak JWT payload with user data
  */
-function simplifyUser(user: any): { data: any } {
+function simplifyUser(user: any): KeycloakJWTPayload {
   logger.debug("simplifyUser - User: " + JSON.stringify(user));
   
   const userData = user.toJSON ? user.toJSON() : user;
   
   return {
     data: {
+      iss: '',
+      sub: userData.username || '',
+      preferred_username: userData.username || '',
       username: userData.username,
       email: userData.email,
       role: userData.role

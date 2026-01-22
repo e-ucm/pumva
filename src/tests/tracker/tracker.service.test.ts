@@ -74,8 +74,7 @@ describe("Tracker service", () => {
       expect(nb).toBe(1);
       const trackers = await getTrackers();
       expect(trackers.length).toBeGreaterThanOrEqual(0);
-      tracker = await getTrackerById(tracker!.tracker_id);
-      expect(tracker).toBeNull();
+      await expect(getTrackerById(tracker!.tracker_id)).rejects.toThrow(NotFoundError);
     });
 
     it("delete tracker by id", async () => {
@@ -83,12 +82,11 @@ describe("Tracker service", () => {
       expect(tracker).toBeDefined();
       expect(tracker!.tracker_id).toBeDefined();
       await deleteTrackerById(tracker!.tracker_id);
-      let deleted_tracker = await getTrackerById(tracker!.tracker_id);
-      expect(deleted_tracker).toBeNull();
+      await expect(getTrackerById(tracker!.tracker_id)).rejects.toThrow(NotFoundError);
     });
 
     it("delete tracker by id should throw when not tracker id defined", async () => {
       expect.assertions(1);
-      await expect(deleteTrackerById(tracker!.tracker_id)).rejects.toThrow(NotFoundError);
+      await expect(deleteTrackerById(999999)).rejects.toThrow(NotFoundError);
     });
 });

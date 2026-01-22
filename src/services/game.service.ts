@@ -23,15 +23,19 @@ export async function getGames(): Promise<InstanceType<typeof db.Tables.Game>[]>
  * @async
  * @function getGameById
  * @param {number} game_id - The game identifier
- * @returns {Promise<Object|null>} The game record or null if not found
+ * @returns {Promise<Object>} The game record
+ * @throws {NotFoundError} If game with given ID does not exist
  * 
  * @example
  * ```typescript
  * const game = await getGameById(123);
  * ```
  */
-export async function getGameById(game_id : number): Promise<InstanceType<typeof db.Tables.Game> | null> {
+export async function getGameById(game_id : number): Promise<InstanceType<typeof db.Tables.Game>> {
     const result = await db.Tables.Game.findByPk(game_id);
+    if (!result) {
+      throw new NotFoundError("Game not found");
+    }
     return result;
 }
 
@@ -40,20 +44,14 @@ export async function getGameById(game_id : number): Promise<InstanceType<typeof
  * 
  * @async
  * @function createGame
- * @param {string} name - Game name
- * @param {boolean} isPublic - Whether the game is publicly accessible
- * @param {string} description - Game description
- * @param {string} type - Game type (e.g., 'WEB', 'DESKTOP')
- * @param {number} owner_id - User ID of the game owner
- * @param {number} technology_id - Technology ID used by the game
- * @param {number} tracker_id - Tracker ID associated with the game
- * @returns {Promise<Object>} The created game record
+ * @param {Partial<InstanceType<typeof db.Tables.Game>>} game - Partial game data
+ * @returns {Promise<InstanceType<typeof db.Tables.Game>>} The created game record
  * 
  * @throws {Error} If database operation fails
  * 
  * @example
  * ```typescript
- * const game = await createGame('My Game', true, 'A fun game', 'WEB', 1, 2, 3);
+ * const game = await createGame({ name: 'My Game', isPublic: true, description: 'A fun game', type: 'WEB', owner_id: 1, technology_id: 2, tracker_id: 3 });
  * ```
  */
 export async function createGame(game : Partial<InstanceType<typeof db.Tables.Game>>): Promise<InstanceType<typeof db.Tables.Game>> {
@@ -86,7 +84,7 @@ export async function updateGames(where: Partial<InstanceType<typeof db.Tables.G
  * @function updateGame
  * @param {number} gameId - The game identifier
  * @param {Object} payload - Partial game data to update
- * @returns {Promise<Object>} The updated game record
+ * @returns {Promise<InstanceType<typeof db.Tables.Game>>} The updated game record
  * 
  * @throws {NotFoundError} If game with given ID does not exist
  * 
@@ -136,7 +134,7 @@ export async function deleteGameById(gameId: number): Promise<void> {
  * 
  * @async
  * @function deleteGames
- * @param {Object} where - Condition to find games to delete
+ * @param {Partial<InstanceType<typeof db.Tables.Game>>} where - Condition to find games to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example

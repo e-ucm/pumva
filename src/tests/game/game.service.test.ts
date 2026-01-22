@@ -105,8 +105,7 @@ describe("Game service", () => {
       expect(nb).toBe(1);
       const games = await getGames();
       expect(games.length).toBeGreaterThanOrEqual(0);
-      game = await getGameById(game!.game_id);
-      expect(game).toBeNull();
+      await expect(getGameById(game!.game_id)).rejects.toThrow(NotFoundError);
     });
 
     it("delete game by id", async () => {
@@ -122,12 +121,11 @@ describe("Game service", () => {
       expect(game).toBeDefined();
       expect(game!.game_id).toBeDefined();
       await deleteGameById(game!.game_id);
-      let deleted_game = await getGameById(game!.game_id);
-      expect(deleted_game).toBeNull();
+      await expect(getGameById(game!.game_id)).rejects.toThrow(NotFoundError);
     });
 
     it("delete game by id should throw when not game id defined", async () => {
       expect.assertions(1);
-      await expect(deleteGameById(game!.game_id)).rejects.toThrow(NotFoundError);
+      await expect(deleteGameById(999999)).rejects.toThrow(NotFoundError);
     });
 });

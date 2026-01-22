@@ -24,7 +24,8 @@ export async function getGamePermissions(): Promise<InstanceType<typeof db.Table
  * @function getGamePermissionById
  * @param {number} game_id - The game identifier
  * @param {number} user_id - The user identifier
- * @returns {Promise<Object|null>} The game permission record or null if not found
+ * @returns {Promise<Object>} The game permission record
+ * @throws {NotFoundError} If game permission with given IDs does not exist
  * 
  * @example
  * ```typescript
@@ -34,10 +35,14 @@ export async function getGamePermissions(): Promise<InstanceType<typeof db.Table
 export async function getGamePermissionById(
   game_id: number,
   user_id: number
-): Promise<InstanceType<typeof db.Tables.GamePermissions> | null> {
-  return db.Tables.GamePermissions.findOne({
+): Promise<InstanceType<typeof db.Tables.GamePermissions>> {
+  const result = await db.Tables.GamePermissions.findOne({
     where: { game_id, user_id }
   });
+  if (!result) {
+    throw new NotFoundError("Game permission not found");
+  }
+  return result;
 }
 
 /**
@@ -90,8 +95,8 @@ export async function updateGamePermissions(
  * @function updateGamePermissionById
  * @param {number} game_id - The game identifier
  * @param {number} user_id - The user identifier
- * @param {Object} payload - Partial game permission data to update
- * @returns {Promise<Object>} The updated game permission record
+ * @param {Partial<InstanceType<typeof db.Tables.GamePermissions>>} payload - Partial game permission data to update
+ * @returns {Promise<InstanceType<typeof db.Tables.GamePermissions>>} The updated game permission record
  * 
  * @throws {NotFoundError} If game permission with given keys does not exist
  * 
@@ -155,7 +160,7 @@ export async function deleteGamePermissionById(
  * 
  * @async
  * @function deleteGamePermissions
- * @param {Object} where - Condition to find game permissions to delete
+ * @param {Partial<InstanceType<typeof db.Tables.GamePermissions>>} where - Condition to find game permissions to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example

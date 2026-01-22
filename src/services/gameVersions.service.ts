@@ -23,7 +23,8 @@ export async function getGameVersions(): Promise<InstanceType<typeof db.Tables.G
  * @async
  * @function getGameVersionById
  * @param {number} version_id - The version identifier
- * @returns {Promise<Object|null>} The game version record or null if not found
+ * @returns {Promise<InstanceType<typeof db.Tables.GamesVersions>>} The game version record
+ * @throws {NotFoundError} If game version with given ID does not exist
  * 
  * @example
  * ```typescript
@@ -32,8 +33,12 @@ export async function getGameVersions(): Promise<InstanceType<typeof db.Tables.G
  */
 export async function getGameVersionById(
   version_id: number
-): Promise<InstanceType<typeof db.Tables.GamesVersions> | null> {
-  return db.Tables.GamesVersions.findByPk(version_id);
+): Promise<InstanceType<typeof db.Tables.GamesVersions>> {
+  const result = await db.Tables.GamesVersions.findByPk(version_id);
+  if (!result) {
+    throw new NotFoundError("Game version not found");
+  }
+  return result;
 }
 
 /**
@@ -41,8 +46,8 @@ export async function getGameVersionById(
  * 
  * @async
  * @function createGameVersion
- * @param {Object} gameVersion - Game version data (game_id, version, external_url required)
- * @returns {Promise<Object>} The created game version record
+ * @param {Partial<InstanceType<typeof db.Tables.GamesVersions>>} gameVersion - Game version data (game_id, version, external_url required)
+ * @returns {Promise<InstanceType<typeof db.Tables.GamesVersions>>} The created game version record
  * 
  * @throws {Error} If database operation fails
  * 
@@ -66,8 +71,8 @@ export async function createGameVersion(
  * 
  * @async
  * @function updateGameVersions
- * @param {Object} where - Condition to find game versions to update
- * @param {Object} payload - Partial game version data to update
+ * @param {Partial<InstanceType<typeof db.Tables.GamesVersions>>} where - Condition to find game versions to update
+ * @param {Partial<InstanceType<typeof db.Tables.GamesVersions>>} payload - Partial game version data to update
  * @returns {Promise<number>} Number of affected rows
  * 
  * @example
@@ -89,8 +94,8 @@ export async function updateGameVersions(
  * @async
  * @function updateGameVersionById
  * @param {number} version_id - The version identifier
- * @param {Object} payload - Partial game version data to update
- * @returns {Promise<Object>} The updated game version record
+ * @param {Partial<InstanceType<typeof db.Tables.GamesVersions>>} payload - Partial game version data to update
+ * @returns {Promise<InstanceType<typeof db.Tables.GamesVersions>>} The updated game version record
  * 
  * @throws {NotFoundError} If game version with given ID does not exist
  * 
@@ -143,7 +148,7 @@ export async function deleteGameVersionById(version_id: number): Promise<void> {
  * 
  * @async
  * @function deleteGameVersions
- * @param {Object} where - Condition to find game versions to delete
+ * @param {Partial<InstanceType<typeof db.Tables.GamesVersions>>} where - Condition to find game versions to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example

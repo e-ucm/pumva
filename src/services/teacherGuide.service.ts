@@ -24,7 +24,8 @@ export async function getTeacherGuides(): Promise<InstanceType<typeof db.Tables.
  * @function getTeacherGuideById
  * @param {number} game_id - The game identifier
  * @param {number} language_id - The language identifier
- * @returns {Promise<Object|null>} The teacher guide record or null if not found
+ * @returns {Promise<InstanceType<typeof db.Tables.TeacherGuide>>} The teacher guide record
+ * @throws {NotFoundError} If teacher guide with given IDs does not exist
  * 
  * @example
  * ```typescript
@@ -34,10 +35,14 @@ export async function getTeacherGuides(): Promise<InstanceType<typeof db.Tables.
 export async function getTeacherGuideById(
   game_id: number,
   language_id: number
-): Promise<InstanceType<typeof db.Tables.TeacherGuide> | null> {
-  return db.Tables.TeacherGuide.findOne({
+): Promise<InstanceType<typeof db.Tables.TeacherGuide>> {
+  const result = await db.Tables.TeacherGuide.findOne({
     where: { game_id, language_id }
   });
+  if (!result) {
+    throw new NotFoundError("Teacher guide not found");
+  }
+  return result;
 }
 
 /**
@@ -45,8 +50,8 @@ export async function getTeacherGuideById(
  * 
  * @async
  * @function createTeacherGuide
- * @param {Object} teacherGuide - Teacher guide data (game_id, language_id, url required)
- * @returns {Promise<Object>} The created teacher guide record
+ * @param {Partial<InstanceType<typeof db.Tables.TeacherGuide>>} teacherGuide - Teacher guide data (game_id, language_id, url required)
+ * @returns {Promise<InstanceType<typeof db.Tables.TeacherGuide>>} The created teacher guide record
  * 
  * @throws {Error} If database operation fails
  * 
@@ -70,8 +75,8 @@ export async function createTeacherGuide(
  * 
  * @async
  * @function updateTeacherGuides
- * @param {Object} where - Condition to find teacher guides to update
- * @param {Object} payload - Partial teacher guide data to update
+ * @param {Partial<InstanceType<typeof db.Tables.TeacherGuide>>} where - Condition to find teacher guides to update
+ * @param {Partial<InstanceType<typeof db.Tables.TeacherGuide>>} payload - Partial teacher guide data to update
  * @returns {Promise<number>} Number of affected rows
  * 
  * @example
@@ -94,8 +99,8 @@ export async function updateTeacherGuides(
  * @function updateTeacherGuideById
  * @param {number} game_id - The game identifier
  * @param {number} language_id - The language identifier
- * @param {Object} payload - Partial teacher guide data to update
- * @returns {Promise<Object>} The updated teacher guide record
+ * @param {Partial<InstanceType<typeof db.Tables.TeacherGuide>>} payload - Partial teacher guide data to update
+ * @returns {Promise<InstanceType<typeof db.Tables.TeacherGuide>>} The updated teacher guide record
  * 
  * @throws {NotFoundError} If teacher guide with given keys does not exist
  * 
@@ -159,7 +164,7 @@ export async function deleteTeacherGuideById(
  * 
  * @async
  * @function deleteTeacherGuides
- * @param {Object} where - Condition to find teacher guides to delete
+ * @param {Partial<InstanceType<typeof db.Tables.TeacherGuide>>} where - Condition to find teacher guides to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example
