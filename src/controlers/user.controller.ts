@@ -35,7 +35,7 @@ export async function getUsers(
       }
       return res.json(user);
     } else {
-      const users = await userService.getUsers();
+      const users = await userService.getAllUsers();
       res.json(users);
     }
   } catch (err) {

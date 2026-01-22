@@ -172,7 +172,7 @@ describe("User Controller /users", () => {
 
   it("GET /users handles service errors", async () => {
     const mockError = new Error('Database connection failed');
-    jest.spyOn(userService, 'getUsers').mockRejectedValueOnce(mockError);
+    jest.spyOn(userService, 'getAllUsers').mockRejectedValueOnce(mockError);
 
     const response = await request(app)
       .get('/users')
