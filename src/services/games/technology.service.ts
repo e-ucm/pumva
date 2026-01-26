@@ -45,7 +45,7 @@ export async function getTechnologyById(technology_id : number): Promise<Instanc
  * @async
  * @function createTechnology
  * @param {string} technology - Technology name (e.g., 'Unity', 'Unreal Engine')
- * @returns {Promise<InstanceType<typeof db.Tables.Technology>>} The created technology record
+ * @returns {Promise<Object>} The created technology record
  * 
  * @throws {Error} If database operation fails
  * 
@@ -63,8 +63,8 @@ export async function createTechnology(technology: string) : Promise<InstanceTyp
  * 
  * @async
  * @function updateTechnologies
- * @param {Partial<InstanceType<typeof db.Tables.Technology>>} where - Condition to find technologies to update
- * @param {Partial<InstanceType<typeof db.Tables.Technology>>} payload - Partial technology data to update
+ * @param {Object} where - Condition to find technologies to update
+ * @param {Object} payload - Partial technology data to update
  * @returns {Promise<number>} Number of affected rows
  * 
  * @example
@@ -83,8 +83,8 @@ export async function updateTechnologies(where: Partial<InstanceType<typeof db.T
  * @async
  * @function updateTechnology
  * @param {number} technologyId - The technology identifier
- * @param {Partial<InstanceType<typeof db.Tables.Technology>>} payload - Partial technology data to update
- * @returns {Promise<InstanceType<typeof db.Tables.Technology>>} The updated technology record
+ * @param {Object} payload - Partial technology data to update
+ * @returns {Promise<Object>} The updated technology record
  * 
  * @throws {NotFoundError} If technology with given ID does not exist
  * 
@@ -134,7 +134,7 @@ export async function deleteTechnologyById(technologyId: number): Promise<void> 
  * 
  * @async
  * @function deleteTechnologies
- * @param {Partial<InstanceType<typeof db.Tables.Technology>>} where - Condition to find technologies to delete
+ * @param {Object} where - Condition to find technologies to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example

@@ -1,12 +1,12 @@
-import { createGame, getGames, getGameById, updateGames, updateGame, deleteGames, deleteGameById } from "@/services/game.service";
-import { getGamesByUser } from "@/services/views.service";
-import { createTechnology } from "@/services/technology.service";
+import { createGame, getGames, getGameById, updateGames, updateGame, deleteGames, deleteGameById } from "@/services/games/game.service";
+import { getGamesByUser } from "@/services/views/views.service";
+import { createTechnology } from "@/services/games/technology.service";
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
 import { NotFoundError } from "@/lib/errors/appErrors";
-import { createTracker } from "@/services/tracker.service";
-import { createUser } from "@/services/user.service";
+import { createTracker } from "@/services/games/tracker.service";
+import { createUser } from "@/services/users/user.service";
 
 
 var technology : InstanceType<typeof db.Tables.Technology> | null;

@@ -6,7 +6,7 @@ import {
   updateGamePermissionById, 
   deleteGamePermissions, 
   deleteGamePermissionById 
-} from "@/services/gamePermissions.service";
+} from "@/services/games/gamePermissions.service";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";

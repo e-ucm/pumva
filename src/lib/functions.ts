@@ -1,7 +1,7 @@
 import { validateParams } from "@/lib/validateParams";
 import { Sequelize, QueryTypes } from "sequelize";
 import fs from "node:fs";
-import { logger } from "./logger";
+import { logger } from "@/lib/logger";
 
 /**
  * Initializes database utility functions.

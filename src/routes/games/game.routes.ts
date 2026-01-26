@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as gameController from "@/controlers/game.controller";
+import * as gameController from "@/controlers/games/game.controller";
 
 /**
  * Express router for game-related endpoints.

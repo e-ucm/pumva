@@ -43,3 +43,26 @@ export class BadRequestError extends Error {
     this.name = "BadRequestError";
   }
 }
+
+/**
+ * Custom error class for handling "not found" scenarios.
+ * Extends the standard Error class and sets the error name to "AuthentificationError".
+ *
+ * @class AuthentificationError
+ * @extends {Error}
+ *
+ * @example
+ * throw new AuthentificationError("User not found");
+ */
+export class AuthentificationError extends Error {
+  /**
+   * Creates a new AuthentificationError instance.
+   *
+   * @constructor
+   * @param {string} message - The error message describing what was not found
+   */
+  constructor(message: string) {
+    super(message);
+    this.name = "AuthentificationError";
+  }
+}

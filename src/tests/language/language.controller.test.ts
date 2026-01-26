@@ -4,7 +4,7 @@ import { app } from '@/app';
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 import { logger } from "@/lib/logger";
-import * as languageService from "@/services/language.service";
+import * as languageService from "@/services/teacherGuide/language.service";
 
 // Mock the auth middleware to accept our test tokens
 jest.mock('@/middlewares/auth.middleware', () => ({
@@ -12,7 +12,7 @@ jest.mock('@/middlewares/auth.middleware', () => ({
     // Mock user for tests
     req.user = {
       data: {
-        username: config.auth.teacher_username,
+        username: config.sso.teacher_username,
         role: 'teacher'
       }
     };

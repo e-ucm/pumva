@@ -5,7 +5,7 @@ import {
   createTracker, 
   updateTrackerById, 
   deleteTrackerById 
-} from "@/controlers/tracker.controller";
+} from "@/controlers/games/tracker.controller";
 
 /**
  * Express router for tracker-related API endpoints.

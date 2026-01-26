@@ -27,8 +27,8 @@ jest.mock('@/lib/config', () => ({
   config: {
     debug: false,
     auth: {
-      keycloak_url: 'http://localhost:8080',
-      keycloak_realm: 'test-realm'
+      url: 'http://localhost:8080',
+      realm: 'test-realm'
     }
   }
 }));
@@ -42,7 +42,10 @@ describe('KeycloakKeyManager', () => {
     // Clear cached keys
     KeycloakKeyManager.clearCache();
     // Setup the mock to return our mockKeyCloakCerts instance
-    MockedKeyCloakCerts.mockImplementation(() => mockKeyCloakCerts);  });
+    MockedKeyCloakCerts.mockImplementation(() => mockKeyCloakCerts);
+    // Initialize KeycloakKeyManager with proper setup
+    KeycloakKeyManager.initialize();
+  });
 
   describe('initialization', () => {
     it('should initialize with proper configuration', () => {
@@ -51,13 +54,13 @@ describe('KeycloakKeyManager', () => {
 
     it('should detect when Keycloak is not configured', () => {
       // Temporarily modify config
-      const originalConfig = config.auth;
-      config.auth = { ...originalConfig, keycloak_url: '' };
+      const originalConfig = config.sso;
+      config.sso = { ...originalConfig, keycloak_url: '' };
       
       expect(KeycloakKeyManager.isEnabled()).toBe(false);
       
       // Restore config
-      config.auth = originalConfig;
+      config.sso = originalConfig;
     });
   });
 
@@ -197,8 +200,8 @@ describe('KeycloakKeyManager', () => {
     });
 
     it('should use environment variable for logging control', async () => {
-      const originalEnv = process.env.KEYCLOAK_LOGGER_ACTIVE;
-      process.env.KEYCLOAK_LOGGER_ACTIVE = 'true';
+      const originalEnv = process.env.LOGGER_ACTIVE;
+      process.env.LOGGER_ACTIVE = 'true';
 
       mockKeyCloakCerts.fetch.mockResolvedValueOnce(testPublicKey);
       await KeycloakKeyManager.getKey(testKid);
@@ -206,7 +209,7 @@ describe('KeycloakKeyManager', () => {
       const mockLogger = require('@/lib/logger').logger;
       expect(mockLogger.info).toHaveBeenCalled();
 
-      process.env.KEYCLOAK_LOGGER_ACTIVE = originalEnv;
+      process.env.LOGGER_ACTIVE = originalEnv;
     });
   });
 });

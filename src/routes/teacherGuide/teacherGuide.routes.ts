@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as teacherGuideController from "@/controlers/teacherGuide.controller";
+import * as teacherGuideController from "@/controlers/teacherGuide/teacherGuide.controller";
 
 /**
  * Express router for teacher guide-related endpoints.

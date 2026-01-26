@@ -4,7 +4,7 @@ import {
   getPublicGamesController, 
   getTeacherGuidesByUserAndGameController, 
   getUserByUsernameController 
-} from "@/controlers/views.controller";
+} from "@/controlers/views/views.controller";
 
 /**
  * Views router for view-based API endpoints.

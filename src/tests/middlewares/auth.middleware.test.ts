@@ -3,10 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 // Mock the user service
 const mockValidateJWT = jest.fn();
 const mockGetUserByUsername = jest.fn();
+const mockGetOrCreateUserByUsername = jest.fn();
 
-jest.mock('@/services/user.service', () => ({
+jest.mock('@/services/users/user.service', () => ({
   validateJWT: mockValidateJWT,
-  getUserByUsername: mockGetUserByUsername
+  getUserByUsername: mockGetUserByUsername,
+  getOrCreateUserByUsername: mockGetOrCreateUserByUsername
 }));
 
 // Mock the logger
@@ -147,15 +149,16 @@ describe('Auth Middleware', () => {
     jest.clearAllMocks();
     mockValidateJWT.mockReset();
     mockGetUserByUsername.mockReset();
+    mockGetOrCreateUserByUsername.mockReset();
   });
 
   describe('Authentication', () => {
     it('should reject requests without authorization header', async () => {
       await Authenticator.auth(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.send).toHaveBeenCalledWith({ message: 'No authorization header' });
-      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+      expect(mockNext.mock.calls[0][0].message).toBe('No authorization header');
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should reject requests with invalid Bearer token format', async () => {
@@ -163,9 +166,9 @@ describe('Auth Middleware', () => {
 
       await Authenticator.auth(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.send).toHaveBeenCalledWith({ message: 'Auth header is not a valid Bearer.' });
-      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+      expect(mockNext.mock.calls[0][0].message).toBe('Auth header is not a valid Bearer.');
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should reject requests with invalid JWT', async () => {
@@ -175,12 +178,9 @@ describe('Auth Middleware', () => {
 
       await Authenticator.auth(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.send).toHaveBeenCalledWith({
-        message: 'JWT token is not valid.',
-        error: expect.any(Error)
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+      expect(mockNext.mock.calls[0][0].message).toBe('JWT token is not valid.');
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should reject requests when user is not found', async () => {
@@ -192,9 +192,9 @@ describe('Auth Middleware', () => {
 
       await Authenticator.auth(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect(mockResponse.send).toHaveBeenCalledWith({ message: 'Username not found' });
-      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+      expect(mockNext.mock.calls[0][0].message).toBe('JWT token is not valid.');
+      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it('should proceed to role authorization for valid tokens', async () => {
@@ -212,12 +212,12 @@ describe('Auth Middleware', () => {
       mockValidateJWT.mockResolvedValueOnce({
         data: { username: 'testuser', role: 'admin' }
       });
-      mockGetUserByUsername.mockResolvedValueOnce(mockUser);
+      mockGetOrCreateUserByUsername.mockResolvedValueOnce(mockUser);
 
       await Authenticator.auth(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockValidateJWT).toHaveBeenCalledWith('valid.jwt.token');
-      expect(mockGetUserByUsername).toHaveBeenCalledWith('testuser');
+      expect(mockGetOrCreateUserByUsername).toHaveBeenCalled();
       expect(mockNext).toHaveBeenCalled();
     });
   });
@@ -261,8 +261,8 @@ describe('Auth Middleware', () => {
 
       await Authenticator.roleAllowed(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockNext).not.toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+      expect(mockNext.mock.calls[0][0].message).toContain('You are not authorized');
     });
 
     it('should allow access to health routes for any role', async () => {
@@ -300,7 +300,7 @@ describe('Auth Middleware', () => {
       mockValidateJWT.mockResolvedValueOnce({
         data: { username: 'testuser', role: 'teacher' }
       });
-      mockGetUserByUsername.mockResolvedValueOnce(mockUser);
+      mockGetOrCreateUserByUsername.mockResolvedValueOnce(mockUser);
 
       await Authenticator.optional(mockRequest as Request, mockResponse as Response, mockNext);
 

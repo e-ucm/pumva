@@ -46,7 +46,7 @@ export async function getTrackerById(tracker_id : number): Promise<InstanceType<
  * @function createTracker
  * @param {number} technology_id - Technology ID this tracker belongs to
  * @param {string} tracker - Tracker name (e.g., 'Xasu', 'JSTracker')
- * @returns {Promise<InstanceType<typeof db.Tables.Tracker>>} The created tracker record
+ * @returns {Promise<Object>} The created tracker record
  * 
  * @throws {Error} If database operation fails
  * 
@@ -64,8 +64,8 @@ export async function createTracker(technology_id: number ,tracker: string) : Pr
  * 
  * @async
  * @function updateTrackers
- * @param {Partial<InstanceType<typeof db.Tables.Tracker>>} where - Condition to find trackers to update
- * @param {Partial<InstanceType<typeof db.Tables.Tracker>>} payload - Partial tracker data to update
+ * @param {Object} where - Condition to find trackers to update
+ * @param {Object} payload - Partial tracker data to update
  * @returns {Promise<number>} Number of affected rows
  * 
  * @example
@@ -84,8 +84,8 @@ export async function updateTrackers(where: Partial<InstanceType<typeof db.Table
  * @async
  * @function updateTracker
  * @param {number} trackerId - The tracker identifier
- * @param {Partial<InstanceType<typeof db.Tables.Tracker>>} payload - Partial tracker data to update
- * @returns {Promise<InstanceType<typeof db.Tables.Tracker>>} The updated tracker record
+ * @param {Object} payload - Partial tracker data to update
+ * @returns {Promise<Object>} The updated tracker record
  * 
  * @throws {NotFoundError} If tracker with given ID does not exist
  * 
@@ -135,7 +135,7 @@ export async function deleteTrackerById(trackerId: number): Promise<void> {
  * 
  * @async
  * @function deleteTrackers
- * @param {Partial<InstanceType<typeof db.Tables.Tracker>>} where - Condition to find trackers to delete
+ * @param {Object} where - Condition to find trackers to delete
  * @returns {Promise<number>} Number of deleted rows
  * 
  * @example

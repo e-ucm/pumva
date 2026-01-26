@@ -6,8 +6,8 @@ import {
   updateTeacherGuideById,
   deleteTeacherGuides,
   deleteTeacherGuideById
-} from "@/services/teacherGuide.service";
-import { getTeacherGuidesByUserAndGame } from "@/services/views.service";
+} from "@/services/teacherGuide/teacherGuide.service";
+import { getTeacherGuidesByUserAndGame } from "@/services/views/views.service";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";

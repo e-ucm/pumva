@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as languageController from "@/controlers/language.controller";
+import * as languageController from "@/controlers/teacherGuide/language.controller";
 
 /**
  * Express router for language-related endpoints.

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "@/services/users/user.service";
 import { NotFoundError } from "@/lib/errors/appErrors";
+import { AuthenticatedRequest } from "@/middlewares/auth.middleware";
 
 /**
  * Retrieves users from the database.
@@ -93,6 +94,33 @@ export async function deleteUserById(
   try {
     await userService.deleteUserById(Number(req.params.id));
     res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * Retrieves the current authenticated user's information.
+ * 
+ * @async
+ * @param {Request} req - Express request object with authenticated user info
+ * @param {Response} res - Express response object
+ * @param {NextFunction} next - Express next middleware function for error handling
+ * @returns {Promise<void>}
+ * @throws {Error} Passes errors to next middleware
+ * 
+ * @example
+ * // GET /users/me
+ * // Returns current user information
+ */
+export async function getMe(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const user = await userService.getUserByUsername(String(req.user?.sql.username));
+    res.json(user);
   } catch (err) {
     next(err);
   }

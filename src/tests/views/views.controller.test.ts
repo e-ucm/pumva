@@ -9,7 +9,7 @@ jest.mock('@/middlewares/auth.middleware', () => ({
     // Mock user for tests
     req.user = {
       data: {
-        username: config.auth.teacher_username,
+        username: config.sso.teacher_username,
         role: 'teacher'
       }
     };

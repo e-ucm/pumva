@@ -5,7 +5,7 @@ import {
   createTechnology, 
   updateTechnologyById, 
   deleteTechnologyById 
-} from "@/controlers/technology.controller";
+} from "@/controlers/games/technology.controller";
 
 /**
  * Express router for technology-related API endpoints.

@@ -6,8 +6,8 @@ import {
   updateGameVersionById, 
   deleteGameVersions, 
   deleteGameVersionById 
-} from "@/services/gameVersions.service";
-import { setGameVersionAsActual } from "@/services/game.service";
+} from "@/services/games/gameVersions.service";
+import { setGameVersionAsActual } from "@/services/games/game.service";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";

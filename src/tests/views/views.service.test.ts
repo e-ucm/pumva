@@ -3,7 +3,7 @@ import {
   getPublicGames, 
   getTeacherGuidesByUserAndGame, 
   getUserByUsername 
-} from "@/services/views.service";
+} from "@/services/views/views.service";
 import { db } from "@/lib/db";
 import { config } from "@/lib/config";
 

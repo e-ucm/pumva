@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as gamePermissionsController from "@/controlers/gamePermissions.controller";
+import * as gamePermissionsController from "@/controlers/games/gamePermissions.controller";
 
 /**
  * Express router for game permissions-related endpoints.

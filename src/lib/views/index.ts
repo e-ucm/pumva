@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import { GamesViews } from "@/lib/views/gamesView.queries";
 import { UsersViews } from "@/lib/views/usersView.queries";
-import { GuideGamesViews } from "./guideGamesView.queries";
+import { GuideGamesViews } from "@/lib/views/guideGamesView.queries";
 
 /**
  * Initializes all database view queries for the application.

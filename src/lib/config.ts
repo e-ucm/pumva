@@ -16,7 +16,7 @@ import path from 'path';
  * @property {Object} api - API configuration
  * @property {Object} logger - Logger configuration
  * @property {Object} shlink - Shlink service configuration
- * @property {Object} auth - Authentication configuration
+ * @property {Object} sso - Authentication configuration
  * 
  * @example
  * ```typescript
@@ -49,10 +49,11 @@ config.db.views_sql_file = config.db.sql_files_path + "/" +  config.db.views_sql
 
 config.api = {}
 config.api.host = process.env.PUMVA_HOST || 'pumva.simva.external.test'
-config.api.port  = process.env.PUMVA_PORT || 443
+config.api.port  = process.env.PUMVA_PORT || 3000
 config.api.protocol = process.env.PUMVA_PROTOCOL || "https"
+config.api.external_port  = process.env.PUMVA_EXTERNAL_PORT || 443
 config.api.url = config.api.protocol + '://' + config.api.host
-		+ ( (ignored_ports.indexOf(config.api.port) !== -1) ? '' : (':' + config.api.port) );
+		+ ( (ignored_ports.indexOf(config.api.external_port) !== -1) ? '' : (':' + config.api.port) );
 
 config.logger = {}
 config.logger.level = process.env.LOG_LEVEL || 'info'
@@ -66,16 +67,30 @@ config.shlink.port = process.env.SHLINK_PORT || '443'
 config.shlink.apiurl =  `${config.shlink.protocol}://${config.shlink.apihost}:${config.shlink.port}`
 config.shlink.apikey = process.env.SHLINK_SERVER_API_KEY || 'myapikey'
 
-config.auth = {}
-config.auth.jwt_secret = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-config.auth.jwt_expires_in = process.env.JWT_EXPIRES_IN || '24h'
-config.auth.url = process.env.KEYCLOAK_URL || 'http://localhost:8080'
-config.auth.realm = process.env.KEYCLOAK_REALM || 'simva'
-config.auth.client_id = process.env.KEYCLOAK_CLIENT_ID || 'pumva'
-config.auth.client_secret = process.env.KEYCLOAK_CLIENT_SECRET || 'secret'
-config.auth.teacher_username = process.env.TEACHER_USERNAME || 'teacher'
-config.auth.teacher_password = process.env.TEACHER_PASSWORD || 'teacher'
-config.auth.admin_username = process.env.ADMIN_USERNAME || 'admin1'
-config.auth.admin_password = process.env.ADMIN_PASSWORD || 'adminpass'
+config.sso = {}
+config.sso.jwt_secret = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+config.sso.jwt_expires_in = process.env.JWT_EXPIRES_IN || '24h'
+config.sso.enabled = process.env.SSO_ENABLED !== 'false'
+config.sso.realm = process.env.SSO_REALM || 'simva'
+config.sso.clientId = process.env.SSO_CLIENT_ID || 'simva'
+config.sso.clientSecret = process.env.SSO_CLIENT_SECRET || 'secret'
+config.sso.studentAllowedRole = process.env.SSO_STUDENT_ALLOWED_ROLE !== 'false'
+config.sso.teachingAssistantAllowedRole = process.env.SSO_TEACHING_ASSISTANT_ALLOWED_ROLE !== 'false'
+config.sso.teacherAllowedRole = process.env.SSO_TEACHER_ALLOWED_ROLE !== 'false'
+config.sso.researcherAllowedRole = process.env.SSO_RESEARCHER_ALLOWED_ROLE !== 'false'
+config.sso.sslRequired = process.env.SSO_SSL_REQUIRED || 'external'
+config.sso.publicClient = process.env.SSO_PUBLIC_CLIENT === 'true'
+config.sso.host = process.env.SSO_HOST || 'sso.external.test'
+config.sso.protocol = process.env.SSO_PROTOCOL || 'https'
+config.sso.port = process.env.SSO_PORT || '443'
+config.sso.url = config.sso.protocol + '://' + config.sso.host + ((ignored_ports.indexOf(Number(config.sso.port)) !== -1) ? '' : (':' + config.sso.port))
+config.sso.adminUser = process.env.SSO_ADMIN_USER || 'administrator'
+config.sso.adminPassword = process.env.SSO_ADMIN_PASSWORD || 'administrator'
+config.sso.teacher_username = process.env.TEACHER_USERNAME || 'teacher'
+config.sso.teacher_password = process.env.TEACHER_PASSWORD || 'teacher'
+config.sso.admin_username = process.env.ADMIN_USERNAME || 'admin1'
+config.sso.admin_password = process.env.ADMIN_PASSWORD || 'adminpass'
+
+
 
 export { config };

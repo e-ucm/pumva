@@ -6,7 +6,7 @@ import {
   updateLanguageById, 
   deleteLanguages, 
   deleteLanguageById 
-} from "@/services/language.service";
+} from "@/services/teacherGuide/language.service";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { config } from "@/lib/config";

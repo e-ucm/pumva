@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "npm run rebuild-sqlite && tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "npm run rebuild-sqlite && node dist/server.js",
     "lint": "eslint",
     "rebuild-sqlite": "npm rebuild sqlite3",
     "updateQueryDocs": "npx tsx updateQueryDocs.ts",

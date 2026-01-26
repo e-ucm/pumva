@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getUsers , createUser, deleteUserById } from "@/controlers/user.controller";
+import { getUsers , createUser, deleteUserById, getMe } from "@/controlers/users/user.controller";
 
 /**
  * Express router for user-related API endpoints.
@@ -25,6 +25,8 @@ import { getUsers , createUser, deleteUserById } from "@/controlers/user.control
 const router = Router();
 
 router.get("/", getUsers);
+// profile
+router.get("/me", getMe);
 router.post("/", createUser);
 router.delete("/:id", deleteUserById);
 

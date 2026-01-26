@@ -12,7 +12,7 @@ jest.mock('@/lib/logger', () => ({
 // Mock the config
 jest.mock('@/lib/config', () => ({
   config: {
-    auth: {
+    sso: {
       jwt_secret: 'test-secret-key'
     }
   }

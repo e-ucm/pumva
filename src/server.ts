@@ -1,36 +1,88 @@
-import { app } from "./app.js";
-import { db } from "@/lib/db";
-import { config } from "@/lib/config";
-import { logger } from "@/lib/logger";
+/**
+ * @fileoverview Server entry point for PUMVA API.
+ * Initializes database connection and starts the Express server.
+ * 
+ * This module:
+ * - Authenticates database connection using Sequelize
+ * - Starts HTTP server on configured port
+ * - Handles startup errors gracefully
+ * - Logs server status and errors
+ * 
+ * @module server
+ * @requires @/app
+ * @requires @/lib/db
+ * @requires @/lib/config
+ * @requires @/lib/logger
+ */
+
+import { app } from '@/app.js';
+import { db } from '@/lib/db';
+import { config } from '@/lib/config';
+import { logger } from '@/lib/logger';
+import { Server } from 'http';
 
 const PORT = config.api.port;
 
+let server: Server | null = null;
+
 /**
- * Starts the Express server after authenticating the database connection.
- *
+ * Gracefully shutdown the server
+ */
+async function shutdown(signal: string) {
+  logger.info(`${signal} received, shutting down gracefully`);
+  
+  if (server) {
+    server.close(async () => {
+      logger.info('HTTP server closed');
+      
+      try {
+        await db.sequelize.close();
+        logger.info('Database connection closed');
+        process.exit(0);
+      } catch (err) {
+        logger.error({err},'Error closing database connection');
+        process.exit(1);
+      }
+    });
+    
+    // Force close after 3 seconds
+    setTimeout(() => {
+      logger.warn('Forcing shutdown after timeout');
+      process.exit(1);
+    }, 3000);
+  } else {
+    process.exit(0);
+  }
+}
+
+/**
+ * Initializes and starts the SIMVA API server.
+ * 
  * @async
  * @function start
- * @returns {Promise<void>}
- * @throws {Error} If database authentication fails
- *
+ * @returns {Promise<void>} Promise that resolves when server starts successfully
+ * @throws {Error} Database connection or server startup errors
+ * 
  * @example
  * ```typescript
- * // Automatically called when this module is executed
- * start().catch(err => {
- *   logger.error({ err }, "Failed to start server");
- *   process.exit(1);
- * });
+ * // Server starts automatically when this module is executed
+ * // Logs: 🚀 PUMVA API running on http://localhost:3000
  * ```
  */
 async function start() {
   await db.sequelize.authenticate();
 
-  app.listen(PORT, () => {
-    console.log(`🚀 API running on ${config.api.url}`);
+  server = app.listen(PORT, '0.0.0.0', () => {
+    logger.info(`🚀 PUMVA API running on 0.0.0.0:${PORT} => external : ${config.api.url}`);
   });
+  
+  // Handle graceful shutdown
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('SIGHUP', () => shutdown('SIGHUP'));
 }
 
 start().catch(err => {
-  logger.error("Failed to start server", err);
+  logger.error('Failed to start server', err);
   process.exit(1);
 });

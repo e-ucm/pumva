@@ -1,5 +1,5 @@
 // Authentication middleware exports
-export { auth, roleAllowed, optionalAuth, Authenticator } from './auth.middleware';
+export { auth, roleAllowed, optionalAuth, Authenticator } from '@/middlewares/auth.middleware';
 
 // Error middleware exports  
-export { errorMiddleware } from './error.middleware';
+export { errorMiddleware } from '@/middlewares/error.middleware';
