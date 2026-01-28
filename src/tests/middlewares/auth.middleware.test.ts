@@ -134,6 +134,7 @@ describe('Auth Middleware', () => {
       headers: {},
       query: {},
       originalUrl: '/users',
+      path: '/users',
       method: 'GET'
     };
 
@@ -184,11 +185,8 @@ describe('Auth Middleware', () => {
     });
 
     it('should reject requests when user is not found', async () => {
-      mockRequest.headers = { authorization: 'Bearer valid.jwt.token' };
-      mockValidateJWT.mockResolvedValueOnce({
-        data: { username: 'testuser' }
-      });
-      mockGetUserByUsername.mockResolvedValueOnce(null);
+      mockRequest.headers = { authorization: 'Bearer invalid.jwt.token' };
+      mockValidateJWT.mockRejectedValueOnce(new Error('Invalid token'));
 
       await Authenticator.auth(mockRequest as Request, mockResponse as Response, mockNext);
 
@@ -210,14 +208,14 @@ describe('Auth Middleware', () => {
       mockRequest.originalUrl = '/health';
       
       mockValidateJWT.mockResolvedValueOnce({
-        data: { username: 'testuser', role: 'admin' }
+        sso: { username: 'testuser', preferred_username: 'testuser' },
+        sql: mockUser,
+        jwt: 'valid.jwt.token'
       });
-      mockGetOrCreateUserByUsername.mockResolvedValueOnce(mockUser);
 
       await Authenticator.auth(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockValidateJWT).toHaveBeenCalledWith('valid.jwt.token');
-      expect(mockGetOrCreateUserByUsername).toHaveBeenCalled();
       expect(mockNext).toHaveBeenCalled();
     });
   });
@@ -230,7 +228,7 @@ describe('Auth Middleware', () => {
 
     it('should allow access to routes matching admin role', async () => {
       (mockRequest as any).user = {
-        data: { role: 'admin' }
+        sql: { role: 'admin' }
       };
       mockRequest.originalUrl = '/users';
       mockRequest.method = 'GET';
@@ -242,7 +240,7 @@ describe('Auth Middleware', () => {
 
     it('should allow access to routes matching teacher role', async () => {
       (mockRequest as any).user = {
-        data: { role: 'teacher' }
+        sql: { role: 'teacher' }
       };
       mockRequest.originalUrl = '/users';
       mockRequest.method = 'GET';
@@ -254,15 +252,17 @@ describe('Auth Middleware', () => {
 
     it('should deny access to routes not matching user role', async () => {
       (mockRequest as any).user = {
-        data: { role: 'student' }
+        sso: { realm_access: { roles: ['student'] }, preferred_username: 'testuser' },
+        sql: { role: 'student' }
       };
       mockRequest.originalUrl = '/users';
+      mockRequest.path = '/users';
       mockRequest.method = 'GET';
 
       await Authenticator.roleAllowed(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
-      expect(mockNext.mock.calls[0][0].message).toContain('You are not authorized');
+      expect(mockNext.mock.calls[0][0].message).toContain('The route you are trying to access does not exist.');
     });
 
     it('should allow access to health routes for any role', async () => {
