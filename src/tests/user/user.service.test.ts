@@ -372,7 +372,7 @@ describe("User Service", () => {
 
       const result = await validateJWT("keycloak.jwt.token");
       expect(result).toBeDefined();
-      expect(result.data).toBeDefined();
+      expect(result.sso).toBeDefined();
       expect(result.sql).toBeDefined();
     });
 

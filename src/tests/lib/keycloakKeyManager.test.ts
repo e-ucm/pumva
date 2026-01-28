@@ -26,7 +26,7 @@ jest.mock('@/lib/logger', () => ({
 jest.mock('@/lib/config', () => ({
   config: {
     debug: false,
-    auth: {
+    sso: {
       url: 'http://localhost:8080',
       realm: 'test-realm'
     }
@@ -55,7 +55,7 @@ describe('KeycloakKeyManager', () => {
     it('should detect when Keycloak is not configured', () => {
       // Temporarily modify config
       const originalConfig = config.sso;
-      config.sso = { ...originalConfig, keycloak_url: '' };
+      config.sso = { ...originalConfig, url: '' };
       
       expect(KeycloakKeyManager.isEnabled()).toBe(false);
       
@@ -200,8 +200,8 @@ describe('KeycloakKeyManager', () => {
     });
 
     it('should use environment variable for logging control', async () => {
-      const originalEnv = process.env.LOGGER_ACTIVE;
-      process.env.LOGGER_ACTIVE = 'true';
+      const originalEnv = process.env.KEYCLOAK_LOGGER_ACTIVE;
+      process.env.KEYCLOAK_LOGGER_ACTIVE = 'true';
 
       mockKeyCloakCerts.fetch.mockResolvedValueOnce(testPublicKey);
       await KeycloakKeyManager.getKey(testKid);
@@ -209,7 +209,7 @@ describe('KeycloakKeyManager', () => {
       const mockLogger = require('@/lib/logger').logger;
       expect(mockLogger.info).toHaveBeenCalled();
 
-      process.env.LOGGER_ACTIVE = originalEnv;
+      process.env.KEYCLOAK_LOGGER_ACTIVE = originalEnv;
     });
   });
 });

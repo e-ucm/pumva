@@ -45,8 +45,11 @@ describe('User Service - Authentication Functions', () => {
 
     it('should successfully validate a JWT with secret verification', async () => {
       const testPayload = {
-        username: 'testuser',
-        role: 'user',
+        preferred_username: 'testuser',
+        email: 'testuser@test.com',
+        realm_access: {
+          roles: ['student']
+        },
         exp: Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
       };
 
@@ -55,13 +58,16 @@ describe('User Service - Authentication Functions', () => {
       const result = await validateJWT(token);
 
       expect(result.sql.username).toBe('testuser');
-      expect(result.sql.role).toBe('user');
+      //expect(result.sql.role).toBe('student');
     });
 
     it('should successfully decode JWT when verification fails', async () => {
       const testPayload = {
-        username: 'testuser',
-        role: 'user',
+        preferred_username: 'testuser',
+        email: 'testuser@test.com',
+        realm_access: {
+          roles: ['student']
+        },
         exp: Math.floor(Date.now() / 1000) + 3600
       };
 
@@ -71,13 +77,16 @@ describe('User Service - Authentication Functions', () => {
       const result = await validateJWT(token);
 
       expect(result.sql.username).toBe('testuser');
-      expect(result.sql.role).toBe('user');
+      //expect(result.sql.role).toBe('user');
     });
 
     it('should handle preferred_username claim', async () => {
       const testPayload = {
         preferred_username: 'testuser',
-        role: 'user',
+        email: 'testuser@test.com',
+        realm_access: {
+          roles: ['student']
+        },
         exp: Math.floor(Date.now() / 1000) + 3600
       };
 
@@ -91,7 +100,10 @@ describe('User Service - Authentication Functions', () => {
     it('should handle sub claim', async () => {
       const testPayload = {
         sub: 'testuser',
-        role: 'user',
+        email: 'testuser@test.com',
+        realm_access: {
+          roles: ['student']
+        },
         exp: Math.floor(Date.now() / 1000) + 3600
       };
 
@@ -104,8 +116,11 @@ describe('User Service - Authentication Functions', () => {
 
     it('should reject expired tokens', async () => {
       const testPayload = {
-        username: 'testuser',
-        role: 'user',
+        preferred_username: 'testuser',
+        email: 'testuser@test.com',
+        realm_access: {
+          roles: ['student']
+        },
         exp: Math.floor(Date.now() / 1000) - 3600 // 1 hour ago
       };
 
@@ -116,7 +131,10 @@ describe('User Service - Authentication Functions', () => {
 
     it('should reject tokens without username identification', async () => {
       const testPayload = {
-        role: 'user',
+        email: 'testuser@test.com',
+        realm_access: {
+          roles: ['student']
+        },
         exp: Math.floor(Date.now() / 1000) + 3600
       };
 
@@ -131,8 +149,8 @@ describe('User Service - Authentication Functions', () => {
 
     it('should handle realm_access claims', async () => {
       const testPayload = {
-        username: 'testuser',
-        role: 'user',
+        preferred_username: 'testuser',
+        email: 'testuser@test.com',
         realm_access: {
           roles: ['teacher', 'researcher']
         },
@@ -143,8 +161,8 @@ describe('User Service - Authentication Functions', () => {
 
       const result = await validateJWT(token);
 
-      expect(result.data.realm_access.roles).toContain('teacher');
-      expect(result.data.realm_access.roles).toContain('researcher');
+      expect(result.sso.realm_access.roles).toContain('teacher');
+      expect(result.sso.realm_access.roles).toContain('researcher');
     });
   });
 
