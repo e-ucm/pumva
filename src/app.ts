@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import userRoutes from "@/routes/users/user.routes";
 import gameRoutes from "@/routes/games/game.routes";
 import gamePermissionsRoutes from "@/routes/games/gamePermissions.routes";
@@ -8,6 +8,7 @@ import trackerRoutes from "@/routes/games/tracker.routes";
 import languageRoutes from "@/routes/teacherGuide/language.routes";
 import teacherGuideRoutes from "@/routes/teacherGuide/teacherGuide.routes";
 import viewsRoutes from "@/routes/views/views.routes";
+import { logger } from "@/lib/logger";
 
 /**
  * Express application instance with configured middleware and routes.
@@ -42,12 +43,16 @@ export const app = express();
 
 app.use(express.json());
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
+app.use((req: Request, _: Response, next : NextFunction) => {
+  logger.info(`${req.method} at ${req.originalUrl} with body ${JSON.stringify(req.body)}`);
+  next();
+})
 
 import { auth } from "@/middlewares";
 app.use(auth);
+app.get("/health", (_req: Request, res: Response) => {
+  res.json({ status: "ok" });
+});
 
 app.use("/users", userRoutes);
 app.use("/games", gameRoutes);
@@ -58,8 +63,6 @@ app.use("/trackers", trackerRoutes);
 app.use("/languages", languageRoutes);
 app.use("/teacher-guides", teacherGuideRoutes);
 app.use("/views", viewsRoutes);
-
-
 
 import { errorMiddleware } from "@/middlewares/error.middleware";
 app.use(errorMiddleware);
