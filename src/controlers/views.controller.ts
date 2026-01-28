@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { 
   getGamesByUser, 
   getPublicGames, 
@@ -30,15 +30,19 @@ import { AuthenticatedRequest } from "@/middlewares/auth.middleware";
  * Response: [{ user_id: 123, game_id: 1, permission: 'READ', ... }]
  * ```
  */
-export async function getGamesByUserController(req: AuthenticatedRequest, res: Response) {
-  const user_id = parseInt(req.params.user_id);
-  
-  if (isNaN(user_id)) {
-    throw new BadRequestError("Invalid user_id parameter");
-  }
+export async function getGamesByUserController(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const user_id = parseInt(req.params.user_id);
+    
+    if (isNaN(user_id)) {
+      throw new BadRequestError("Invalid user_id parameter");
+    }
 
-  const games = await getGamesByUser(user_id);
-  res.json(games);
+    const games = await getGamesByUser(user_id);
+    res.json(games);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -56,9 +60,13 @@ export async function getGamesByUserController(req: AuthenticatedRequest, res: R
  * Response: [{ game_id: 1, name: 'Public Game', public: true, ... }]
  * ```
  */
-export async function getPublicGamesController(req: AuthenticatedRequest, res: Response) {
-  const games = await getPublicGames();
-  res.json(games);
+export async function getPublicGamesController(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const games = await getPublicGames();
+    res.json(games);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -76,20 +84,24 @@ export async function getPublicGamesController(req: AuthenticatedRequest, res: R
  * Response: [{ user_id: 123, game_id: 456, language: 'en', teacher_guide_url: '...', ... }]
  * ```
  */
-export async function getTeacherGuidesByUserAndGameController(req: AuthenticatedRequest, res: Response) {
-  const user_id = parseInt(req.params.user_id);
-  const game_id = parseInt(req.params.game_id);
-  
-  if (isNaN(user_id)) {
-    throw new BadRequestError("Invalid user_id parameter");
-  }
-  
-  if (isNaN(game_id)) {
-    throw new BadRequestError("Invalid game_id parameter");
-  }
+export async function getTeacherGuidesByUserAndGameController(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const user_id = parseInt(Array.isArray(req.params.user_id) ? req.params.user_id[0] : req.params.user_id);
+    const game_id = parseInt(Array.isArray(req.params.game_id) ? req.params.game_id[0] : req.params.game_id);
+    
+    if (isNaN(user_id)) {
+      throw new BadRequestError("Invalid user_id parameter");
+    }
+    
+    if (isNaN(game_id)) {
+      throw new BadRequestError("Invalid game_id parameter");
+    }
 
-  const guides = await getTeacherGuidesByUserAndGame(user_id, game_id);
-  res.json(guides);
+    const guides = await getTeacherGuidesByUserAndGame(user_id, game_id);
+    res.json(guides);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -107,18 +119,18 @@ export async function getTeacherGuidesByUserAndGameController(req: Authenticated
  * Response: [{ user_id: 123, username: 'john_doe', email: '...', ... }]
  * ```
  */
-export async function getUserByUsernameController(req: AuthenticatedRequest, res: Response) {
-  const { username } = req.params;
-  
-  if (!username || username.trim() === '') {
-    throw new BadRequestError("Username parameter is required");
+export async function getUserByUsernameController(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const { username } = req.params;
+    if (!username || username.trim() === '') {
+      throw new BadRequestError("Username parameter is required");
+    }
+    const users = await getUserByUsername(username);
+    if (users.length === 0) {
+      throw new NotFoundError("User not found");
+    }
+    res.json(users);
+  } catch (error) {
+    next(error);
   }
-
-  const users = await getUserByUsername(username);
-  
-  if (users.length === 0) {
-    throw new NotFoundError("User not found");
-  }
-  
-  res.json(users);
 }
