@@ -48,8 +48,9 @@ app.use((req: Request, _: Response, next : NextFunction) => {
   next();
 })
 
-import { auth } from "@/middlewares";
+import { auth, roleAllowed } from "@/middlewares";
 app.use(auth);
+//app.use(roleAllowed)
 app.get("/health", (_req: Request, res: Response) => {
   res.json({ status: "ok" });
 });
