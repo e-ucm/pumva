@@ -81,7 +81,25 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
+  /users/me:
+    get:
+      tags:
+        - admins
+        - teachers
+        - students
+      summary: Obtains your own user.
+      operationId: getMe
+      description: |
+        Based on the current auth header obtains the user
+      responses:
+        '200':
+          description: The user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: 'invalid input'
   /users/{id}:
     delete:
       tags:
