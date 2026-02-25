@@ -32,7 +32,7 @@ import { AuthenticatedRequest } from "@/middlewares/auth.middleware";
  */
 export async function getGamesByUserController(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
-    const user_id = parseInt(req.params.user_id);
+    const user_id = parseInt(req.params.user_id as string);
     
     if (isNaN(user_id)) {
       throw new BadRequestError("Invalid user_id parameter");
@@ -121,7 +121,7 @@ export async function getTeacherGuidesByUserAndGameController(req: Authenticated
  */
 export async function getUserByUsernameController(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
-    const { username } = req.params;
+    const username = req.params.username as string;
     if (!username || username.trim() === '') {
       throw new BadRequestError("Username parameter is required");
     }

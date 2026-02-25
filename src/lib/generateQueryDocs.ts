@@ -75,4 +75,4 @@ function generateDocs() {
   return md;
 }
 
-export = generateDocs;
+export default generateDocs;
